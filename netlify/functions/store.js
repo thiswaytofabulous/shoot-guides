@@ -126,7 +126,7 @@ async function notify(rec) {
   // No sandbox fallback on purpose: onboarding@resend.dev only delivers to the Resend
   // account owner, which is the bug that silently ate submissions before.
   if (!from || /resend\.dev/i.test(from)) {
-    console.error("[notify] ABORT: NOTIFY_FROM must be the verified havenbuiltmedia.com sender. Got:", from || "(MISSING)");
+    console.error("[notify] ABORT: NOTIFY_FROM must be a sender on a Resend-verified domain. Got:", from || "(MISSING)");
     return { attempted: false, ok: false, reason: "NOTIFY_FROM missing or sandbox" };
   }
 

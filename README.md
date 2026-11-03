@@ -26,7 +26,7 @@ The page shows its success message if the submission was saved or emailed. It sh
 | Variable | Value |
 |---|---|
 | `RESEND_API_KEY` | Your Resend API key |
-| `NOTIFY_FROM` | `noreply@havenbuiltmedia.com`, the verified domain. Never `onboarding@resend.dev`: the function refuses the sandbox sender. |
+| `NOTIFY_FROM` | `noreply@thiswaytofabulous.com` (verified in Resend). Never `onboarding@resend.dev`: the function refuses the sandbox sender. |
 | `NOTIFY_TO` | `jessi@thiswaytofabulous.com` (comma-separate to add more) |
 | `ADMIN_CODE` | Any long random string. Use the same value as `SHOOT_GUIDES_CODE` on the dashboard site. |
 
