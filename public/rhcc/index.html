@@ -283,14 +283,14 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
   <section id="questions">
     <div class="sh">Four quick questions</div>
     <h2>Four answers. <em>That's it.</em></h2>
-    <form name="rhcc-answers" method="POST" class="nf" id="answersForm">
+    <form name="rhcc-answers" method="POST" class="nf" id="answersForm" autocomplete="off">
       <input type="hidden" name="form-name" value="rhcc-answers">
       <p hidden><label>Leave blank <input name="company"></label></p>
       <div class="qs">
         <div class="q"><div class="n">1</div><h3>Which opening sounds most like Becky?</h3>
           <ul><li><label><input type="radio" name="opening" value="Opening A, the why"> Opening A, the why</label></li><li><label><input type="radio" name="opening" value="Opening B, the 2 a.m. call"> Opening B, the 2 a.m. call</label></li><li><label><input type="radio" name="opening" value="Neither (tell me what's off below)"> Neither (tell me what's off below)</label></li></ul></div>
         <div class="q"><div class="n">2</div><h3>After watching, what's the one thing people should do? <span style="font-weight:500;color:var(--muted)">Kristyn picked a discovery call. Becky, agree?</span></h3>
-          <ul><li><label><input type="radio" name="next-step" value="Book a discovery call" checked> Book a discovery call</label></li><li><label><input type="radio" name="next-step" value="Grab a Quiet Growth guide"> Grab a Quiet Growth guide</label></li><li><label><input type="radio" name="next-step" value="Come to a Dinner Series"> Come to a Dinner Series</label></li></ul></div>
+          <ul><li><label><input type="radio" name="next-step" value="Book a discovery call"> Book a discovery call</label></li><li><label><input type="radio" name="next-step" value="Grab a Quiet Growth guide"> Grab a Quiet Growth guide</label></li><li><label><input type="radio" name="next-step" value="Come to a Dinner Series"> Come to a Dinner Series</label></li></ul></div>
         <div class="q"><div class="n">3</div><h3>Fill in the proof.</h3>
           <div class="fields">
             <label>Years Becky ran her own agency<input type="text" name="years-agency" inputmode="numeric"></label>
@@ -452,6 +452,18 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
     });
   }
   ['answersForm','flagForm'].forEach(function(id){var f=document.getElementById(id);if(f)wire(f);});
+
+  // Start the bullets clean (some browsers restore old picks on reload), and let a
+  // second click on a picked bullet clear it, so an accidental tap is easy to undo.
+  var radios=[].slice.call(document.querySelectorAll('.nf input[type=radio]'));
+  radios.forEach(function(r){r.checked=false;r.dataset.on='';});
+  radios.forEach(function(r){
+    r.addEventListener('click',function(){
+      if(r.dataset.on==='1'){r.checked=false;r.dataset.on='';return;}
+      radios.forEach(function(o){if(o.name===r.name)o.dataset.on='';});
+      r.dataset.on='1';
+    });
+  });
 
   // ---- Editable script: tap a line, rewrite it, send. Both of them see the latest version. ----
   (function(){
