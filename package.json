@@ -1,0 +1,13 @@
+{
+  "name": "shoot-guides",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Client shoot guides (one folder per client) for This Way to Fabulous. Submissions email via Resend and feed the TWTF Live Dashboard.",
+  "type": "module",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
