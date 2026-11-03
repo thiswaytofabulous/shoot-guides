@@ -31,7 +31,8 @@
   }
 
   // extraFields: more answers to include. draft: {doc, lines} to save as the shared latest version.
-  function submit(form, extraFields, draft) {
+  // files: [{name, type, data(base64)}] from prepareImages.
+  function submit(form, extraFields, draft, files) {
     var fields = fieldsOf(form);
     if (extraFields) for (var k in extraFields) fields[k] = extraFields[k];
     return fetch("/.netlify/functions/store", {
@@ -43,7 +44,8 @@
         form: formName(form),
         fields: fields,
         page: location.pathname,
-        draft: draft || undefined
+        draft: draft || undefined,
+        files: files && files.length ? files : undefined
       })
     })
       .then(function (res) {
@@ -64,5 +66,27 @@
       .catch(function () { return null; });
   }
 
-  window.ShootGuide = { submit: submit, getDraft: getDraft };
+  // Shrink phone photos/screenshots before upload: long edge 1600px, JPEG. Unreadable files are skipped.
+  function shrink(file) {
+    return new Promise(function (resolve) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+        var c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        var dataUrl = c.toDataURL("image/jpeg", 0.82);
+        resolve({ name: (file.name || "screenshot").replace(/\.[^.]+$/, "") + ".jpg", type: "image/jpeg", data: dataUrl.split(",")[1], preview: dataUrl });
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+  function prepareImages(fileList, max) {
+    var list = [].slice.call(fileList || []).slice(0, max || 6);
+    return Promise.all(list.map(shrink)).then(function (a) { return a.filter(Boolean); });
+  }
+
+  window.ShootGuide = { submit: submit, getDraft: getDraft, prepareImages: prepareImages };
 })();

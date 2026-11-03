@@ -181,6 +181,17 @@ a.pin:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
 .ideas{margin-top:18px;background:var(--soft);border-radius:14px;padding:18px 20px;display:grid;gap:8px}
 .ideas b{font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--mauve-ink)}
 .ideas p{font-size:.92rem;color:var(--muted)}
+.uploadrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:10px}
+.btn.ghost{background:#fff;color:var(--mauve-ink);border:1.5px solid var(--mauve);display:inline-block}
+.uploadrow:focus-within .btn.ghost{outline:3px solid var(--pink);outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.filecount{font-size:.82rem;font-weight:700;color:var(--mauve-ink)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumbs:empty{display:none}
+.thumb{position:relative;width:64px;height:96px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(43,58,62,.85);color:#fff;font:800 14px/1 var(--body);cursor:pointer}
+.opt{font-weight:500;color:var(--muted)}
 .status.ok{color:#2f6b4f}.status.err{color:#a3364f}
 footer{border-top:1px solid var(--line);margin-top:56px}
 footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline}
@@ -372,8 +383,14 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
       <div class="pins"><a class="pin" href="https://www.pinterest.com/search/pins/?q=two%20women%20business%20partners%20coordinating%20outfits%20photoshoot" target="_blank" rel="noopener">Coordinated, not matching →</a><a class="pin" href="https://www.pinterest.com/search/pins/?q=what%20to%20wear%20on%20camera%20video%20women%20professional%20solid%20colors" target="_blank" rel="noopener">What reads well on camera →</a><a class="pin" href="https://www.pinterest.com/search/pins/?q=simple%20everyday%20jewelry%20professional%20women%20portrait" target="_blank" rel="noopener">Everyday jewelry →</a></div>
       <form name="rhcc-inspo" class="nf" id="inspoForm" style="margin-top:10px">
         <p hidden><label>Leave blank <input name="company"></label></p>
-        <p><strong style="color:var(--fg)">See something you love?</strong> In Pinterest, tap Share, then Copy link, and paste it here. Or feel free to text me screenshots of things you love at <strong style="color:var(--fg);white-space:nowrap">630-965-6827</strong>. Totally optional.</p>
-        <label class="full" style="margin-top:8px">Pinterest links<textarea name="links" rows="3" required placeholder="Paste one or a few links"></textarea></label>
+        <p><strong style="color:var(--fg)">See something you love?</strong> On your phone, screenshot it on Pinterest and upload it right here. You can also paste a link, or text screenshots to me at <strong style="color:var(--fg);white-space:nowrap">630-965-6827</strong>. Totally optional.</p>
+        <div class="uploadrow">
+          <label class="btn ghost" for="inspoFiles">Upload screenshots</label>
+          <input type="file" id="inspoFiles" accept="image/*" multiple class="vh">
+          <span class="filecount" aria-live="polite"></span>
+        </div>
+        <div class="thumbs" id="inspoThumbs"></div>
+        <label class="full" style="margin-top:8px"><span>Pinterest links <span class="opt">(optional)</span></span><textarea name="links" rows="2" placeholder="Paste one or a few links"></textarea></label>
         <div class="submitrow" style="margin-top:10px">
           <label class="who-sel">From<select name="from" required><option value="">Pick one</option><option>Becky</option><option>Kristyn</option><option>Both of us</option></select></label>
           <button class="btn" type="submit">Send to Jessi</button>
@@ -478,7 +495,44 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
           btn.disabled=false;btn.textContent=label;});
     });
   }
-  ['answersForm','flagForm','inspoForm'].forEach(function(id){var f=document.getElementById(id);if(f)wire(f);});
+  ['answersForm','flagForm'].forEach(function(id){var f=document.getElementById(id);if(f)wire(f);});
+
+  // ---- Outfit inspo: upload screenshots and/or paste links ----
+  (function(){
+    var form=document.getElementById('inspoForm'); if(!form) return;
+    var input=document.getElementById('inspoFiles'), thumbs=document.getElementById('inspoThumbs'), count=form.querySelector('.filecount');
+    var links=form.querySelector('textarea[name=links]'), files=[], MAX=6, status=form.querySelector('.status');
+    function render(){
+      thumbs.innerHTML='';
+      files.forEach(function(f,i){
+        var d=document.createElement('div');d.className='thumb';
+        var im=document.createElement('img');im.src=f.preview;im.alt='Screenshot '+(i+1);
+        var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Remove screenshot '+(i+1));
+        x.addEventListener('click',function(){files.splice(i,1);render();});
+        d.appendChild(im);d.appendChild(x);thumbs.appendChild(d);
+      });
+      count.textContent=files.length?files.length+' screenshot'+(files.length>1?'s':'')+' ready'+(files.length>=MAX?' (6 max)':''):'';
+    }
+    input.addEventListener('change',function(){
+      if(!input.files.length)return;
+      count.textContent='Getting them ready…';status.className='status';status.textContent='';
+      ShootGuide.prepareImages(input.files,MAX-files.length).then(function(list){files=files.concat(list).slice(0,MAX);input.value='';render();});
+    });
+    var btn=form.querySelector('button[type=submit]'), label=btn.textContent;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      if(!files.length&&!links.value.trim()){status.className='status err';status.textContent='Add a screenshot or a link first.';return;}
+      btn.disabled=true;btn.textContent='Sending…';status.className='status';status.textContent='';
+      ShootGuide.submit(form,null,null,files.map(function(f){return {name:f.name,type:f.type,data:f.data};}))
+        .then(function(ok){if(!ok)throw new Error('not sent');
+          status.className='status ok';status.textContent='Got it! This went straight to Jessi.';
+          btn.textContent='Sent';files=[];render();links.value='';
+          setTimeout(function(){btn.disabled=false;btn.textContent=label;},2500);})
+        .catch(function(){
+          status.className='status err';status.textContent="That didn't send. Text it to Jessi at "+PHONE+" instead.";
+          btn.disabled=false;btn.textContent=label;});
+    });
+  })();
 
   // Start the bullets clean (some browsers restore old picks on reload), and let a
   // second click on a picked bullet clear it, so an accidental tap is easy to undo.

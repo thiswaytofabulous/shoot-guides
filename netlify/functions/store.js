@@ -36,6 +36,7 @@ const CLIENTS = {
       "note": "Note",
       "what-changed": "What changed",
       "links": "Pinterest links",
+      "screenshots": "Screenshots",
       "full-script": "Full script, as they left it"
     }
   }
@@ -51,6 +52,24 @@ const WHO_FIELDS = ["name", "your-name", "from", "who", "sender", "submitted-by"
 const MAX_FIELD_CHARS = 10000;
 const MAX_DRAFT_LINES = 40;
 const MAX_LINE_CHARS = 2000;
+// Uploaded screenshots: the page shrinks them on the phone first (~200-400KB each).
+const MAX_FILES = 6;
+const MAX_FILES_B64 = 4_500_000; // stays under Netlify's 6MB request limit
+
+function cleanFiles(raw) {
+  const out = [];
+  let total = 0;
+  (Array.isArray(raw) ? raw.slice(0, MAX_FILES) : []).forEach((f, i) => {
+    const data = String((f && f.data) || "");
+    if (!data || !/^[A-Za-z0-9+/=]+$/.test(data)) return;
+    if (total + data.length > MAX_FILES_B64) return;
+    total += data.length;
+    const type = /^image\/(jpeg|png|webp)$/.test(f.type) ? f.type : "image/jpeg";
+    const name = String(f.name || "").replace(/[^\w.\- ]+/g, "").slice(0, 80) || `screenshot-${i + 1}.jpg`;
+    out.push({ name, type, data });
+  });
+  return out;
+}
 
 function cleanDoc(doc) {
   return String(doc || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40);
@@ -118,7 +137,7 @@ function fromAddress() {
   return raw.includes("<") ? raw : `This Way to Fabulous <${raw}>`;
 }
 
-async function notify(rec) {
+async function notify(rec, files = []) {
   const resendKey = process.env.RESEND_API_KEY;
   const to = process.env.NOTIFY_TO;
   const from = fromAddress();
@@ -179,7 +198,10 @@ async function notify(rec) {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${resendKey}` },
-      body: JSON.stringify({ from, to: to.split(",").map((s) => s.trim()).filter(Boolean), subject, html, text })
+      body: JSON.stringify({
+        from, to: to.split(",").map((s) => s.trim()).filter(Boolean), subject, html, text,
+        ...(files.length ? { attachments: files.map((f) => ({ filename: f.name, content: f.data })) } : {})
+      })
     });
     const raw = await res.text();
     let parsed = null;
@@ -215,6 +237,8 @@ export default async (req) => {
 
       const form = String(body.form || "").slice(0, 80) || `${client}-submission`;
       const fields = cleanFields(body.fields);
+      const files = cleanFiles(body.files);
+      if (files.length) fields.screenshots = `${files.length} attached to this email: ${files.map((f) => f.name).join(", ")}`;
       const labels = cfg.labels || {};
       const createdAt = new Date().toISOString();
       const id = `${client}/${createdAt.replace(/[:.]/g, "-")}-${Math.random().toString(36).slice(2, 8)}`;
@@ -255,7 +279,16 @@ export default async (req) => {
         }
       }
 
-      const mail = await notify(rec);
+      if (files.length) {
+        try {
+          const fileStore = getStore("shoot-guide-files");
+          await Promise.all(files.map((f, i) => fileStore.set(`${id}/${i + 1}-${f.name}`, Buffer.from(f.data, "base64"))));
+        } catch (e) {
+          console.error("[store] screenshot save failed:", String((e && e.message) || e));
+        }
+      }
+
+      const mail = await notify(rec, files);
       // The page says "Got it!" as long as the submission landed somewhere you'll see it.
       const ok = saved || mail.ok;
       return json({ ok, saved, notify: mail }, ok ? 200 : 502);
