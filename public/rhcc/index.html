@@ -192,6 +192,20 @@ a.pin:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
 .thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .thumb button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(43,58,62,.85);color:#fff;font:800 14px/1 var(--body);cursor:pointer}
 .opt{font-weight:500;color:var(--muted)}
+.inspoboard{margin-top:6px;padding-top:16px;border-top:1px solid var(--line);display:grid;gap:10px}
+.inspoboard[hidden]{display:none}
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.igrid:empty,.ilinks:empty{display:none}
+.itile{position:relative;margin:0;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.itile a{display:block;aspect-ratio:3/5}
+.itile img{width:100%;height:100%;object-fit:cover;display:block}
+.itile figcaption{font-size:.68rem;font-weight:700;letter-spacing:.04em;color:var(--muted);padding:5px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.itile button,.ilink button{border:0;cursor:pointer;font:800 13px/1 var(--body)}
+.itile button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(43,58,62,.85);color:#fff}
+.ilinks{display:flex;flex-wrap:wrap;gap:8px}
+.ilink{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1.5px solid var(--mauve);border-radius:999px;padding-left:12px}
+.ilink a{font-size:.74rem;font-weight:700;color:var(--mauve-ink);text-decoration:none;padding:6px 0}
+.ilink button{background:none;color:var(--muted);padding:6px 10px;font-size:14px}
 .status.ok{color:#2f6b4f}.status.err{color:#a3364f}
 footer{border-top:1px solid var(--line);margin-top:56px}
 footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline}
@@ -397,6 +411,11 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
           <span class="status" role="status" aria-live="polite"></span>
         </div>
       </form>
+      <div class="inspoboard" id="inspoBoard" hidden aria-live="polite">
+        <b>Your inspo so far</b>
+        <div class="igrid" id="inspoGrid"></div>
+        <div class="ilinks" id="inspoLinks"></div>
+      </div>
     </div>
     <div class="two" style="margin-top:24px">
       <div><h3>These help</h3><ul><li>Solid colors with some weight to the fabric</li><li>Open necklines, like a soft V or a wide crew</li><li>Jewelry you wear every day</li><li>A steamer and a lint roller</li></ul></div>
@@ -518,6 +537,43 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
       count.textContent='Getting them ready…';status.className='status';status.textContent='';
       ShootGuide.prepareImages(input.files,MAX-files.length).then(function(list){files=files.concat(list).slice(0,MAX);input.value='';render();});
     });
+    // Shared board: everything either of them has sent shows here for both.
+    var board=document.getElementById('inspoBoard'), grid=document.getElementById('inspoGrid'), linkRow=document.getElementById('inspoLinks');
+    function when(iso){try{return new Date(iso).toLocaleDateString([], {weekday:'short'});}catch(e){return '';}}
+    function hideBtn(label,id,item,node){
+      var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label',label);
+      x.addEventListener('click',function(){
+        if(!confirm('Take this off the page? Jessi still has a copy.'))return;
+        ShootGuide.hideInspo(id,item).then(function(ok){if(ok)node.remove();if(!grid.children.length&&!linkRow.children.length)board.hidden=true;});
+      });
+      return x;
+    }
+    function loadBoard(){
+      ShootGuide.getInspo().then(function(items){
+        grid.innerHTML='';linkRow.innerHTML='';
+        items.forEach(function(it){
+          var tag=(it.who||'One of you')+' · '+when(it.createdAt);
+          it.images.forEach(function(im){
+            var fig=document.createElement('figure');fig.className='itile';
+            var a=document.createElement('a');a.href=im.url;a.target='_blank';a.rel='noopener';
+            var img=document.createElement('img');img.src=im.url;img.alt='Outfit inspo from '+(it.who||'one of you');img.loading='lazy';
+            var cap=document.createElement('figcaption');cap.textContent=tag;
+            a.appendChild(img);fig.appendChild(a);fig.appendChild(cap);
+            fig.appendChild(hideBtn('Remove this screenshot',it.id,im.key,fig));
+            grid.appendChild(fig);
+          });
+          it.links.forEach(function(l){
+            var span=document.createElement('span');span.className='ilink';
+            var a=document.createElement('a');a.href=l;a.target='_blank';a.rel='noopener';a.textContent='Pin from '+(it.who||'one of you')+' →';
+            span.appendChild(a);span.appendChild(hideBtn('Remove this link',it.id,l,span));
+            linkRow.appendChild(span);
+          });
+        });
+        board.hidden=!(grid.children.length||linkRow.children.length);
+      });
+    }
+    loadBoard();
+
     var btn=form.querySelector('button[type=submit]'), label=btn.textContent;
     form.addEventListener('submit',function(e){
       e.preventDefault();
@@ -526,7 +582,7 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
       ShootGuide.submit(form,null,null,files.map(function(f){return {name:f.name,type:f.type,data:f.data};}))
         .then(function(ok){if(!ok)throw new Error('not sent');
           status.className='status ok';status.textContent='Got it! This went straight to Jessi.';
-          btn.textContent='Sent';files=[];render();links.value='';
+          btn.textContent='Sent';files=[];render();links.value='';loadBoard();
           setTimeout(function(){btn.disabled=false;btn.textContent=label;},2500);})
         .catch(function(){
           status.className='status err';status.textContent="That didn't send. Text it to Jessi at "+PHONE+" instead.";

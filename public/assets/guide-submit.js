@@ -88,5 +88,17 @@
     return Promise.all(list.map(shrink)).then(function (a) { return a.filter(Boolean); });
   }
 
-  window.ShootGuide = { submit: submit, getDraft: getDraft, prepareImages: prepareImages };
+  function call(body) {
+    body.client = clientSlug();
+    return fetch("/.netlify/functions/store", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (res) { return res.ok ? res.json() : null; }).catch(function () { return null; });
+  }
+  // Shared outfit inspo board: [{id, who, createdAt, images:[{key,url}], links:[url]}]
+  function getInspo() { return call({ action: "inspo-list" }).then(function (d) { return (d && d.items) || []; }); }
+  function hideInspo(id, item) { return call({ action: "inspo-hide", id: id, item: item }).then(function (d) { return !!(d && d.ok); }); }
+
+  window.ShootGuide = { submit: submit, getDraft: getDraft, prepareImages: prepareImages, getInspo: getInspo, hideInspo: hideInspo };
 })();

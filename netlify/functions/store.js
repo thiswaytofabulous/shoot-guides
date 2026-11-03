@@ -218,7 +218,42 @@ async function notify(rec, files = []) {
   }
 }
 
+// GET ?file=<key> serves one uploaded screenshot so the guide page can show it.
+async function serveFile(req) {
+  const key = new URL(req.url).searchParams.get("file") || "";
+  const client = key.split("/")[0];
+  if (!CLIENTS[client] || key.includes("..")) return new Response("Not found", { status: 404 });
+  const buf = await getStore("shoot-guide-files").get(key, { type: "arrayBuffer" });
+  if (!buf) return new Response("Not found", { status: 404 });
+  const type = /\.png$/i.test(key) ? "image/png" : /\.webp$/i.test(key) ? "image/webp" : "image/jpeg";
+  return new Response(buf, { status: 200, headers: { "Content-Type": type, "Cache-Control": "private, max-age=86400" } });
+}
+
+// The shared inspo board: every outfit-inspo submission for a client, newest first, minus hidden ones.
+async function inspoBoard(store, client) {
+  const { blobs } = await store.list({ prefix: client + "/" });
+  const recs = (await Promise.all(blobs.map((b) => store.get(b.key, { type: "json" }))))
+    .filter((r) => r && r.form === `${client}-inspo`)
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  const fileStore = getStore("shoot-guide-files");
+  const items = await Promise.all(recs.map(async (r) => {
+    const hidden = new Set(r.hiddenItems || []);
+    const { blobs: files } = await fileStore.list({ prefix: r.id + "/" });
+    return {
+      id: r.id,
+      who: r.who,
+      createdAt: r.createdAt,
+      images: files.filter((f) => !hidden.has(f.key)).map((f) => ({ key: f.key, url: "/.netlify/functions/store?file=" + encodeURIComponent(f.key) })),
+      links: (String((r.fields && r.fields.links) || "").match(/https?:\/\/[^\s]+/g) || []).filter((l) => !hidden.has(l))
+    };
+  }));
+  return items.filter((i) => i.images.length || i.links.length);
+}
+
 export default async (req) => {
+  if (req.method === "GET") {
+    try { return await serveFile(req); } catch (e) { return new Response("Error", { status: 500 }); }
+  }
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
 
   let body;
@@ -292,6 +327,28 @@ export default async (req) => {
       // The page says "Got it!" as long as the submission landed somewhere you'll see it.
       const ok = saved || mail.ok;
       return json({ ok, saved, notify: mail }, ok ? 200 : 502);
+    }
+
+    if (action === "inspo-list") {
+      const client = String(body.client || "").toLowerCase();
+      if (!CLIENTS[client]) return json({ error: "Unknown client" }, 400);
+      return json({ items: await inspoBoard(store, client) });
+    }
+
+    // Take one screenshot or link off the page's inspo board (`item` = file key or link).
+    // It stays in the email and on the dashboard.
+    if (action === "inspo-hide") {
+      const client = String(body.client || "").toLowerCase();
+      const id = String(body.id || "");
+      const item = String(body.item || "").slice(0, 500);
+      if (!CLIENTS[client] || !id.startsWith(client + "/")) return json({ error: "Unknown item" }, 400);
+      const rec = await store.get(id, { type: "json" });
+      if (!rec || rec.form !== `${client}-inspo`) return json({ error: "Unknown item" }, 404);
+      if (!item) return json({ error: "Missing item" }, 400);
+      rec.hiddenItems = Array.from(new Set([...(rec.hiddenItems || []), item]));
+      rec.updatedAt = new Date().toISOString();
+      await store.setJSON(id, rec);
+      return json({ ok: true });
     }
 
     if (action === "draft-get") {
