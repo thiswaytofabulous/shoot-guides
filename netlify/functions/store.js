@@ -19,7 +19,8 @@ const CLIENTS = {
     forms: {
       "rhcc-answers": "Script answers",
       "rhcc-flags": "Flag for discussion",
-      "rhcc-script": "Script edits"
+      "rhcc-script": "Script edits",
+      "rhcc-inspo": "Outfit inspo"
     },
     // Optional: nicer labels in the email + dashboard (anything unlisted is auto-labeled).
     labels: {
@@ -34,6 +35,7 @@ const CLIENTS = {
       "section": "About",
       "note": "Note",
       "what-changed": "What changed",
+      "links": "Pinterest links",
       "full-script": "Full script, as they left it"
     }
   }
@@ -148,7 +150,7 @@ async function notify(rec) {
   const rows = entries.map(([k, v]) => `
     <div style="margin:0 0 12px;padding:12px 14px;background:${BRAND.blush};border-left:3px solid ${BRAND.pink};border-radius:4px">
       <div style="font-family:${BRAND.font};font-size:11px;letter-spacing:.08em;font-weight:800;color:${BRAND.pink};margin-bottom:4px;text-transform:uppercase">${esc(rec.labels[k] || prettyLabel(k))}</div>
-      <div style="font-family:${BRAND.font};font-size:14px;line-height:1.55;color:${BRAND.navy}">${esc(v || "(left blank)").replace(/\n/g, "<br>")}</div>
+      <div style="font-family:${BRAND.font};font-size:14px;line-height:1.55;color:${BRAND.navy}">${esc(v || "(left blank)").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" style="color:' + BRAND.pink + '">$1</a>').replace(/\n/g, "<br>")}</div>
     </div>`).join("") || `<p style="font-family:${BRAND.font};color:${BRAND.navy};opacity:.6">(No fields filled in.)</p>`;
 
   const html = `<div style="font-family:${BRAND.font};color:${BRAND.navy};max-width:640px;margin:0 auto">
