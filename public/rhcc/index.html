@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RHCC Hero Session · One Week Out</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap">
+<style>
+/* RHCC palette carries the page; TWTF shows up in the type system (Montserrat Black caps), the hot-pink rule, and the sign-off. */
+:root{
+  --bg:#f6f2ef; --surface:#fff; --fg:#2b3a3e; --muted:#5e6056;
+  --slate:#395157; --taupe:#d5cac4; --mauve:#b76979; --mauve-ink:#9a5162;
+  --soft:#eee6e1; --line:#ddd2cc; --mark:#f2dde1; --pink:#FF0091;
+  --display:"Playfair Display", Georgia, serif;
+  --body:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.65}
+.wrap{max-width:min(1000px,94vw);margin:0 auto;padding:0 16px}
+.read{max-width:66ch}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+
+/* masthead */
+.mast{background:var(--slate);color:#fff}
+.mast .wrap{padding-block:clamp(26px,5vw,48px) clamp(34px,6vw,60px)}
+.lockup{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.7rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.lockup .x{opacity:.75}
+.lockup .twtf{color:#fff;border-bottom:2px solid var(--pink);padding-bottom:2px}
+.mast .count{margin-top:clamp(26px,5vw,44px);font-weight:900;font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:#e7c3cb}
+.mast h1{font-weight:900;font-size:clamp(2.1rem,6vw,3.6rem);line-height:1.02;letter-spacing:-.01em;text-transform:uppercase;margin-top:10px}
+.mast h1 em{font-family:var(--display);font-weight:400;font-style:italic;text-transform:none;letter-spacing:0;color:#e7c3cb}
+.mast .lede{margin-top:18px;max-width:58ch;font-size:1.04rem;opacity:.94}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-size:.85rem;font-weight:600}
+.facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pink);margin-right:8px;vertical-align:middle}
+
+section{padding-top:clamp(40px,6vw,62px)}
+.sh{font-weight:800;font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mauve-ink);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sh::before{content:"";width:22px;height:2px;background:var(--pink)}
+h2{font-weight:900;font-size:clamp(1.45rem,3.4vw,2.1rem);line-height:1.12;text-transform:uppercase;margin-bottom:14px}
+h2 em{font-family:var(--display);font-weight:400;font-style:italic;text-transform:none;color:var(--mauve-ink)}
+.stack{display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(18px,3vw,28px)}
+
+/* video-first split */
+.split{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:20px 0 14px}
+.split div{border-radius:12px;padding:16px 18px;min-width:0}
+.split .v{background:var(--slate);color:#fff}
+.split .p{background:var(--taupe);color:var(--fg)}
+.split b{display:block;font-weight:900;text-transform:uppercase;letter-spacing:.06em;font-size:1rem}
+.split span{font-size:.9rem;opacity:.92}
+@media (max-width:600px){.split{grid-template-columns:1fr}}
+
+/* run of day */
+.day{display:grid;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.row{display:grid;grid-template-columns:86px 1fr auto;gap:14px;align-items:baseline;padding:14px 18px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row time{font-weight:800;font-variant-numeric:tabular-nums;color:var(--mauve-ink)}
+.row b{font-weight:700}
+.row p{font-size:.9rem;color:var(--muted);margin-top:2px}
+.tag{font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.tag.v{background:var(--slate);color:#fff}
+.tag.p{background:var(--taupe);color:var(--fg)}
+.tag.b{background:var(--mark);color:var(--mauve-ink)}
+@media (max-width:560px){.row{grid-template-columns:64px 1fr}.row .tag{grid-column:2;justify-self:start}}
+
+/* timeline */
+.todo ol{margin:0;padding-left:1.2em;display:grid;gap:10px}
+.todo li::marker{font-weight:900;color:var(--mauve-ink)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:22px;font-variant-numeric:tabular-nums}
+.tl{border-top:3px solid var(--taupe);padding-top:10px}
+.tl.now{border-color:var(--pink)}
+.tl.shoot{border-color:var(--slate)}
+.tl b{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.tl span{display:block;font-weight:600;font-size:.94rem;margin-top:2px}
+@media (max-width:640px){.timeline{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* script */
+.script{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.script-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px clamp(18px,3vw,28px);border-bottom:1px solid var(--line);background:var(--soft)}
+.meta{font-size:.78rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn{font-family:var(--body);font-weight:800;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;background:var(--slate);color:#fff;border:0;border-radius:999px;padding:10px 18px;cursor:pointer}
+.btn:focus-visible,.flag:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.script-body{padding:clamp(18px,3vw,32px);display:grid;gap:22px}
+.openers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:720px){.openers{grid-template-columns:1fr}}
+.opener{border:1px dashed var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.olabel{font-weight:800;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mauve-ink)}
+.vo{font-family:var(--display);font-size:clamp(1.08rem,2vw,1.24rem);line-height:1.6}
+.lines{display:grid;gap:14px}
+.line{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:baseline}
+.who{font-family:var(--body);font-weight:900;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;padding-top:6px}
+.who.k{color:var(--mauve-ink)}
+@media (max-width:520px){.line{grid-template-columns:1fr;gap:2px}}
+mark{background:var(--mark);color:inherit;padding:0 .25em;border-radius:4px;font-family:var(--body);font-size:.84em;font-weight:600}
+.note{font-size:.88rem;color:var(--muted)}
+
+/* questions */
+.qs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:720px){.qs{grid-template-columns:1fr}}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;min-width:0}
+.q .n{font-family:var(--display);font-style:italic;font-size:1.5rem;color:var(--mauve-ink);line-height:1}
+.q h3{font-size:1rem;font-weight:700;margin:8px 0 10px;line-height:1.35}
+.q ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.q li{display:flex;gap:10px;align-items:baseline;font-size:.94rem}
+.q li::before{content:"";flex:0 0 12px;height:12px;border:2px solid var(--mauve);border-radius:50%;transform:translateY(1px)}
+
+/* grids */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.grid3{grid-template-columns:1fr}}
+.c{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.c.lead{border:2px solid var(--slate)}
+.c .flagline{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;background:var(--slate);color:#fff;border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.c h3{font-size:.98rem;font-weight:700;margin-bottom:6px}
+.c p{font-size:.9rem;color:var(--muted)}
+
+.looks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:720px){.looks{grid-template-columns:1fr}}
+.look{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:grid;gap:10px;min-width:0}
+.chips{display:flex;gap:6px}
+.chip{width:28px;height:28px;border-radius:50%;border:1px solid var(--line)}
+.look .for{font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.look h3{font-family:var(--display);font-weight:400;font-size:1.3rem}
+.look p{font-size:.94rem}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.two h3{font-size:.76rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.two ul{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.95rem}
+
+.soft{background:var(--soft);border-radius:14px;padding:clamp(22px,4vw,34px)}
+
+/* flag for discussion */
+.flagbar{display:flex;justify-content:flex-end;margin-top:12px}
+.flag{font-family:var(--body);font-weight:700;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--mauve-ink);border:1.5px solid var(--mauve);border-radius:999px;padding:7px 14px;cursor:pointer}
+.flag:hover{background:var(--mark)}
+.fallback{margin-top:10px;display:grid;gap:8px}
+.fallback textarea{width:100%;min-height:84px;font:inherit;font-size:.95rem;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--fg)}
+.fallback .row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.flagbox{background:var(--surface);border:2px solid var(--mauve);border-radius:14px;padding:clamp(20px,3vw,28px)}
+
+
+/* Netlify forms */
+.nf label{display:grid;gap:6px;font-size:.8rem;font-weight:700;letter-spacing:.04em;color:var(--fg)}
+.nf .q label{display:flex;gap:10px;align-items:baseline;font-size:.94rem;font-weight:500;letter-spacing:0;cursor:pointer}
+.nf .q li::before{display:none}
+.nf input[type=radio]{accent-color:var(--mauve);width:16px;height:16px;flex:0 0 16px;transform:translateY(2px)}
+.nf input[type=text],.nf select,.nf textarea{width:100%;font:inherit;font-size:.95rem;font-weight:500;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--fg)}
+.nf textarea{min-height:96px;resize:vertical}
+.nf input:focus-visible,.nf select:focus-visible,.nf textarea:focus-visible{outline:3px solid var(--pink);outline-offset:1px}
+.nf .fields{display:grid;gap:10px}
+.nf .q .fields label,.nf .fields label{display:grid;gap:6px;font-size:.82rem;font-weight:700;align-items:start;cursor:default}
+.nf .two-col{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}
+@media (max-width:600px){.nf .two-col{grid-template-columns:1fr}}
+.nf .full{margin-top:2px}
+.submitrow{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-top:16px}
+.who-sel{min-width:200px}
+.status{font-size:.9rem;font-weight:700}
+.status.ok{color:#2f6b4f}.status.err{color:#a3364f}
+footer{border-top:1px solid var(--line);margin-top:56px}
+footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline}
+.phone{font-weight:800;font-size:1.1rem;letter-spacing:.04em;font-variant-numeric:tabular-nums;user-select:all}
+.made{font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.made b{color:var(--fg);border-bottom:2px solid var(--pink)}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="lockup"><span>Reel Home Care Consulting</span><span><span class="x">Directed by </span><span class="twtf">This Way to Fabulous</span></span></div>
+    <div class="count">One week out</div>
+    <h1>The first video said hello.<br><em>This one says "we."</em></h1>
+    <p class="lede">Becky and Kristyn, here's the game plan for next Monday: what we're making, how the day runs, a first draft of your script, and what to wear and bring. Answer the questions and send any notes right from this page. They come straight to me.</p>
+    <div class="facts"><span>Monday, November 9</span><span>11:00 to 2:00</span><span>Location: confirming this week</span></div>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section id="focus">
+    <div class="sh">The focus</div>
+    <h2>This is a video day <em>first.</em></h2>
+    <p class="read">Your intake made it clear: the gap is the hero video. Your three-year-old homepage video still says "I," and RHCC is a "we" now. So the video gets the best part of the day, while you're both fresh. Photos come in second, and they'll be purposeful: you two in action with a client (the one thing your library doesn't have yet), a fresh look for each of you, and new images for the Quiet Growth guides. Expect a focused gallery, not a full brand-shoot library.</p>
+    <div class="split" role="img" aria-label="About two thirds of the day is video, about one third is photo">
+      <div class="v"><b>Video</b><span>The hero video, quick social clips, b-roll with your "client"</span></div>
+      <div class="p"><b>Photo</b><span>One dedicated block, plus stills I grab during b-roll</span></div>
+    </div>
+    <div class="flagbar"><button class="flag" type="button" data-for="focus">Flag this for discussion</button></div>
+  </section>
+
+  <section id="todos">
+    <div class="sh">Your to-dos this week</div>
+    <div class="card todo">
+      <ol class="read">
+        <li><strong>Read the draft script out loud, together,</strong> and send your answers to the four questions under it by Wednesday. Mark anything that doesn't sound like you.</li>
+        <li><strong>Line up your "client."</strong> Have your friend there by 12:20. No lines, just a real conversation across the table.</li>
+        <li><strong>Pull two or three looks each from your closets.</strong> No shopping. Ideas are below.</li>
+        <li><strong>Location is still being locked in.</strong> I'll confirm the spot by Wednesday. If you have a favorite space in mind, flag it below. We need a table, good window light, and a quiet corner for audio.</li>
+      </ol>
+      <div class="timeline" aria-label="Timeline">
+        <div class="tl now"><b>Wed, Nov 4</b><span>Your answers + edits</span></div>
+        <div class="tl"><b>Fri, Nov 6</b><span>Final script to you</span></div>
+        <div class="tl"><b>The weekend</b><span>Say it out loud a few times</span></div>
+        <div class="tl shoot"><b>Mon, Nov 9</b><span>Shoot day, 11 to 2</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="day">
+    <div class="sh">How the day runs</div>
+    <h2>Three hours, <em>video up front.</em></h2>
+    <div class="day">
+      <div class="row"><time>11:00</time><div><b>Arrive, mic up, settle in</b><p>Coffee in hand, walk the space. No camera for the first few minutes.</p></div><span class="tag b">Setup</span></div>
+      <div class="row"><time>11:10</time><div><b>The hero video script</b><p>Section by section, a few takes each, then a pass of the two of you just talking about why you do this.</p></div><span class="tag v">Video</span></div>
+      <div class="row"><time>12:00</time><div><b>Quick talking clips</b><p>Short vertical answers for Instagram and LinkedIn. I ask, you answer like normal humans.</p></div><span class="tag v">Video</span></div>
+      <div class="row"><time>12:20</time><div><b>Your "client" arrives, quick reset</b><p>Water, touch-ups, and a jacket swap if you want one.</p></div><span class="tag b">Break</span></div>
+      <div class="row"><time>12:30</time><div><b>B-roll: you two at work</b><p>Working with your client across the table, walking in, the dashboard on screen. I grab stills as we go.</p></div><span class="tag v">Video + stills</span></div>
+      <div class="row"><time>1:10</time><div><b>Portraits</b><p>Quick fresh portraits in your new looks, then the two of you together.</p></div><span class="tag p">Photo</span></div>
+      <div class="row"><time>1:45</time><div><b>Details and wrap</b><p>The book, the dashboard, hands and notes. Out the door by 2.</p></div><span class="tag p">Photo</span></div>
+    </div>
+    <div class="flagbar"><button class="flag" type="button" data-for="day">Flag this for discussion</button></div>
+  </section>
+
+  <section id="script">
+    <div class="sh">The draft script</div>
+    <h2>Version one, <em>written to be changed.</em></h2>
+    <p class="read" style="margin-bottom:18px">Becky leads, and Kristyn comes in on the parts that are really about how you work together. Read it out loud as a pair. Anywhere you trip, or anywhere it sounds like someone else, note it in the box under the questions and I'll rewrite it.</p>
+    <div class="script">
+      <div class="script-head">
+        <span class="meta">Becky + Kristyn · about 170 words · runs 75 to 90 seconds</span>
+        <button class="btn" id="copyScript" type="button">Copy script</button>
+      </div>
+      <div class="script-body">
+        <div>
+          <p class="note" style="margin-bottom:10px">Becky opens. Pick one:</p>
+          <div class="openers">
+            <div class="opener"><div class="olabel">Opening A · The why</div>
+              <div class="vo" style="margin-top:8px"><p>Most home care owners I meet didn't get into this to run a business. They got into it because someone they loved needed care, and they knew it could be done better.</p></div></div>
+            <div class="opener"><div class="olabel">Opening B · The 2 a.m. call</div>
+              <div class="vo" style="margin-top:8px"><p>I know the 2 a.m. phone call. The shift nobody can cover. The referral that went somewhere else. If you own a home care agency, you know them too.</p></div></div>
+          </div>
+        </div>
+        <div class="lines vo" id="scriptBody">
+          <div class="line"><span class="who">Becky</span><p>Hiring. Referrals. Open shifts. Growth you can't quite get your arms around. It's a lot to carry alone.</p></div>
+          <div class="line"><span class="who">Becky</span><p>I've been where you are. I ran my own agency for <mark>[#] years</mark> and grew it into the top-rated home care agency in North America.</p></div>
+          <div class="line"><span class="who k">Kristyn</span><p>And now we do this together. We've worked with <mark>[#]+ owners</mark> in <mark>[#] states</mark>, from launching, to scaling, to selling.</p></div>
+          <div class="line"><span class="who">Becky</span><p>We're not consultants who hand you a binder and disappear. We're partners.</p></div>
+          <div class="line"><span class="who k">Kristyn</span><p>We start with your story and where you want to go. Then we build your plan around our five REEL Principles, with a custom dashboard and real accountability, so you can actually see the growth happening. No two plans look the same.</p></div>
+          <div class="line"><span class="who">Becky</span><p>Because when your agency is strong, caregivers stay. Clients get to stay home. And you finally get to exhale.</p></div>
+          <div class="line"><span class="who k">Kristyn</span><p><mark>[Next step, from question 2]</mark></p></div>
+          <div class="line"><span class="who">Becky</span><p>Let's grow your agency, on purpose.</p></div>
+        </div>
+        <p class="note">Highlighted pieces need your real numbers. If any of them aren't true yet, we'll swap in something that is.</p>
+      </div>
+    </div>
+    <div class="flagbar"><a class="flag" href="#questions" style="text-decoration:none">Answer the questions + send script notes ↓</a></div>
+  </section>
+
+  <section id="questions">
+    <div class="sh">Four quick questions</div>
+    <h2>Four answers. <em>That's it.</em></h2>
+    <form name="rhcc-answers" method="POST" class="nf" id="answersForm">
+      <input type="hidden" name="form-name" value="rhcc-answers">
+      <p hidden><label>Leave blank <input name="company"></label></p>
+      <div class="qs">
+        <div class="q"><div class="n">1</div><h3>Which opening sounds most like Becky?</h3>
+          <ul><li><label><input type="radio" name="opening" value="Opening A, the why"> Opening A, the why</label></li><li><label><input type="radio" name="opening" value="Opening B, the 2 a.m. call"> Opening B, the 2 a.m. call</label></li><li><label><input type="radio" name="opening" value="Neither (tell me what's off below)"> Neither (tell me what's off below)</label></li></ul></div>
+        <div class="q"><div class="n">2</div><h3>After watching, what's the one thing people should do?</h3>
+          <ul><li><label><input type="radio" name="next-step" value="Book a discovery call"> Book a discovery call</label></li><li><label><input type="radio" name="next-step" value="Grab a Quiet Growth guide"> Grab a Quiet Growth guide</label></li><li><label><input type="radio" name="next-step" value="Come to a Dinner Series"> Come to a Dinner Series</label></li></ul></div>
+        <div class="q"><div class="n">3</div><h3>Fill in the proof.</h3>
+          <div class="fields">
+            <label>Years Becky ran her own agency<input type="text" name="years-agency" inputmode="numeric"></label>
+            <label>Owners you've worked with<input type="text" name="owners-count"></label>
+            <label>How many states<input type="text" name="states-count"></label>
+            <label>Optional: one result you're proud of<input type="text" name="proud-result"></label>
+          </div></div>
+        <div class="q"><div class="n">4</div><h3>Kristyn, how does your part feel?</h3>
+          <ul><li><label><input type="radio" name="kristyn-part" value="Good as is"> Good as is</label></li><li><label><input type="radio" name="kristyn-part" value="Give me more lines"> Give me more lines</label></li><li><label><input type="radio" name="kristyn-part" value="Give me fewer lines"> Give me fewer lines</label></li></ul></div>
+      </div>
+      <div class="q" style="margin-top:14px">
+        <h3 style="margin-top:0">Script edits, or anything that doesn't sound like you</h3>
+        <textarea name="script-notes" rows="4" placeholder="Paste the line and tell me what's off. Rough is perfect."></textarea>
+      </div>
+      <div class="submitrow">
+        <label class="who-sel">Who's answering?<select name="from" required><option value="">Pick one</option><option>Becky</option><option>Kristyn</option><option>Both of us</option></select></label>
+        <button class="btn" type="submit">Send my answers to Jessi</button>
+        <span class="status" role="status" aria-live="polite"></span>
+      </div>
+    </form>
+  </section>
+
+  <section id="practice">
+    <div class="sh">How script day works</div>
+    <div class="read stack">
+      <p>Practiced, not memorized. Say it out loud a few times over the weekend, in the car or over coffee. You do not need it word for word.</p>
+      <p>On the day we'll film it in short sections, a few takes each, and switch who's on camera as we go. Nobody has to nail 90 seconds in one take, and I'll pick the best of each section in the edit.</p>
+    </div>
+  </section>
+
+  <section id="making">
+    <div class="sh">What we're making</div>
+    <h2>Every frame <em>has a job.</em></h2>
+    <div class="grid3">
+      <div class="c lead"><span class="flagline">The main event</span><h3>Your new homepage video</h3><p>75 to 90 seconds, the two of you, built to replace the current video at the top of your homepage.</p></div>
+      <div class="c lead"><span class="flagline">Video</span><h3>Two cuts</h3><p>Horizontal for the website, vertical for social. Same video.</p></div>
+      <div class="c lead"><span class="flagline">Video</span><h3>Quick clips + b-roll</h3><p>Short talking clips and vertical b-roll you can post or hand off for Reels.</p></div>
+      <div class="c"><h3>You two, with a client</h3><p>You've got great portraits and great shots of you working side by side. What's missing is you two across the table from a real client. That's the partner story in one frame.</p></div>
+      <div class="c"><h3>A new photo of you two together</h3><p>A fall, indoor version to rotate in with the patio photo that's on every guide's welcome page.</p></div>
+      <div class="c"><h3>New images for the guides</h3><p>Fresh cover and section images for the Quiet Growth guides, plus the details: the book, the dashboard, notes.</p></div>
+    </div>
+    <p class="note" style="margin-top:14px">Photos are delivered as a web-resolution gallery, licensed for your use, with unlimited downloads.</p>
+    <div class="flagbar"><button class="flag" type="button" data-for="making">Flag this for discussion</button></div>
+  </section>
+
+  <section id="wear">
+    <div class="sh">What to wear</div>
+    <h2>Two looks each <em>(three if you can't choose).</em></h2>
+    <p class="read" style="margin-bottom:18px">Three hours goes fast, so two looks each is the sweet spot. A third is fine, it just means a little less time per look. Coordinated, not matching. Please don't buy anything. Bring a backup for each and we'll decide together under the lights. Text each other before Monday so you're not both in teal.</p>
+    <div class="looks">
+      <div class="look">
+        <div class="chips"><span class="chip" style="background:#395157"></span><span class="chip" style="background:#2e3f45"></span><span class="chip" style="background:#b76979"></span><span class="chip" style="background:#d5cac4"></span></div>
+        <div class="for">Look 1 · The script</div>
+        <h3>Deep, solid, a little structured</h3>
+        <p>Kristyn, you're in blue in almost every photo we have, so let's try you in mauve, berry or a warm taupe. Becky in a deep slate, teal or navy. A jacket if you love one. This is the homepage video, so wear what makes you feel most like yourselves on a big day.</p>
+      </div>
+      <div class="look">
+        <div class="chips"><span class="chip" style="background:#eee6e1"></span><span class="chip" style="background:#d5cac4"></span><span class="chip" style="background:#b1958d"></span></div>
+        <div class="for">Look 2 · B-roll + portraits</div>
+        <h3>Soft and easy</h3>
+        <p>Cream, oatmeal or a warm knit, or Look 1 with the jacket off. Think of what you'd wear to a Dinner Series.</p>
+      </div>
+    </div>
+    <div class="two" style="margin-top:24px">
+      <div><h3>These help</h3><ul><li>Solid colors with some weight to the fabric</li><li>Open necklines, like a soft V or a wide crew</li><li>Jewelry you wear every day</li><li>A steamer and a lint roller</li></ul></div>
+      <div><h3>Skip these</h3><ul><li>Busy prints, thin stripes and logos</li><li>Shiny fabrics like satin or sequins</li><li>Bright white tops</li><li>Anything you'll tug at all day</li></ul></div>
+    </div>
+    <div class="flagbar"><button class="flag" type="button" data-for="wear">Flag this for discussion</button></div>
+  </section>
+
+  <section id="bring">
+    <div class="sh">What to bring</div>
+    <div class="two">
+      <ul>
+        <li>A laptop with a client dashboard open. Sample or blurred numbers are perfect.</li>
+        <li>A big notepad or portable whiteboard, if you have one, so we can map out the five REEL Principles</li>
+        <li>A few copies of <em>Borrowed Time</em></li>
+      </ul>
+      <ul>
+        <li>The notebook you actually use with clients</li>
+        <li>Your favorite mugs</li>
+        <li>Your friend playing the client, arriving at 12:20</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="flag">
+    <div class="sh">Anything else?</div>
+    <div class="flagbox">
+      <h2 style="margin-bottom:10px">Flag it here.</h2>
+      <p class="read">A change, a question, a "we'd rather not." Send it here and it comes straight to my inbox for us to talk through. Nothing changes until we both say yes.</p>
+      <form name="rhcc-flags" method="POST" class="nf" id="flagForm" style="margin-top:16px">
+        <input type="hidden" name="form-name" value="rhcc-flags">
+        <p hidden><label>Leave blank <input name="company"></label></p>
+        <div class="fields two-col">
+          <label>Who's this from?<select name="from" required><option value="">Pick one</option><option>Becky</option><option>Kristyn</option><option>Both of us</option></select></label>
+          <label>What's it about?<select name="section" id="sectionSel">
+            <option value="general">Something else</option>
+            <option value="focus">The video-first focus</option>
+            <option value="day">How the day runs</option>
+            <option value="script">The script</option>
+            <option value="making">What we're making</option>
+            <option value="wear">What to wear</option>
+            <option value="bring">What to bring</option>
+            <option value="location">The location</option>
+          </select></label>
+        </div>
+        <label class="full">Your note<textarea name="note" id="flagNote" rows="4" required placeholder="What would you change, or what do you want to talk through?"></textarea></label>
+        <div class="submitrow">
+          <button class="btn" type="submit">Send to Jessi</button>
+          <span class="status" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh">About the nerves</div>
+    <div class="soft"><div class="vo"><p>You've done this before, and this time you've got each other. My job on the day is to make it feel like a conversation, not a performance. If a take doesn't land, we just do it again. Nobody sees the outtakes but me.</p></div></div>
+  </section>
+
+</div></main>
+
+<footer>
+  <div class="wrap">
+    <div><p>Questions, or want a second opinion on an outfit? Text me a photo.</p><p class="phone" style="margin-top:6px">Jessi · 630-965-6827</p></div>
+    <span class="made">Made for RHCC by <b>This Way to Fabulous</b></span>
+  </div>
+</footer>
+
+<script src="/assets/guide-submit.js"></script>
+<script>
+(function(){
+  var PHONE='630-965-6827';
+  // Flag buttons jump to the note form with the section preselected
+  document.querySelectorAll('[data-for]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.getAttribute('data-for');
+      var sel=document.getElementById('sectionSel');
+      if(sel&&sel.querySelector('option[value="'+id+'"]'))sel.value=id;
+      var f=document.getElementById('flag');
+      f.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(function(){document.getElementById('flagNote').focus({preventScroll:true});},450);
+    });
+  });
+  function wire(form){
+    var status=form.querySelector('.status'), btn=form.querySelector('button[type=submit]'), label=btn.textContent;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      btn.disabled=true;btn.textContent='Sending…';status.className='status';status.textContent='';
+      ShootGuide.submit(form)
+        .then(function(ok){if(!ok)throw new Error('not sent');
+          status.className='status ok';status.textContent='Got it! This went straight to Jessi.';
+          btn.textContent='Sent';form.querySelectorAll('textarea').forEach(function(t){t.value='';});
+          setTimeout(function(){btn.disabled=false;btn.textContent=label;},2500);})
+        .catch(function(){
+          status.className='status err';status.textContent="That didn't send. Text it to Jessi at "+PHONE+" instead.";
+          btn.disabled=false;btn.textContent=label;});
+    });
+  }
+  ['answersForm','flagForm'].forEach(function(id){var f=document.getElementById(id);if(f)wire(f);});
+
+  var copyBtn=document.getElementById('copyScript');
+  copyBtn.addEventListener('click',function(){
+    var openers=[].map.call(document.querySelectorAll('.opener'),function(o){return o.querySelector('.olabel').textContent+'\n'+o.querySelector('.vo').innerText.trim();});
+    var body=[].map.call(document.querySelectorAll('#scriptBody .line'),function(l){return l.querySelector('.who').textContent.toUpperCase()+': '+l.querySelector('p').innerText.trim();}).join('\n\n');
+    var text='RHCC HERO VIDEO, DRAFT 1\n\n'+openers.join('\n\n')+'\n\nBODY\n'+body;
+    var done=function(){copyBtn.textContent='Copied';setTimeout(function(){copyBtn.textContent='Copy script'},1800)};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,sel);}else sel();
+    function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('scriptBody'));var s=getSelection();s.removeAllRanges();s.addRange(r);copyBtn.textContent='Selected';}
+  });
+})();
+</script>
+</body>
+</html>

@@ -16,12 +16,27 @@ const CLIENTS = {
     forms: {
       "rhcc-answers": "Script answers",
       "rhcc-flags": "Flag for discussion"
+    },
+    // Optional: nicer labels in the email + dashboard (anything unlisted is auto-labeled).
+    labels: {
+      "opening": "Q1 · Opening",
+      "next-step": "Q2 · Next step after watching",
+      "years-agency": "Q3 · Years Becky ran her agency",
+      "owners-count": "Q3 · Owners worked with",
+      "states-count": "Q3 · States",
+      "proud-result": "Q3 · Result they're proud of",
+      "kristyn-part": "Q4 · Kristyn's part",
+      "script-notes": "Script notes",
+      "section": "About",
+      "note": "Note"
     }
   }
 };
 
 // Fields that are plumbing, not answers.
-const SKIP_FIELDS = new Set(["form-name", "bot-field", "client"]);
+const SKIP_FIELDS = new Set(["form-name", "bot-field", "company", "client"]);
+// Hidden spam traps: a person never fills these in.
+const HONEYPOTS = ["bot-field", "company"];
 // Field names that hold "who sent this", checked in order.
 const WHO_FIELDS = ["name", "your-name", "from", "who", "sender", "submitted-by"];
 
@@ -120,7 +135,7 @@ async function notify(rec) {
 
   const rows = entries.map(([k, v]) => `
     <div style="margin:0 0 12px;padding:12px 14px;background:${BRAND.blush};border-left:3px solid ${BRAND.pink};border-radius:4px">
-      <div style="font-family:${BRAND.font};font-size:11px;letter-spacing:.08em;font-weight:800;color:${BRAND.pink};margin-bottom:4px;text-transform:uppercase">${esc(prettyLabel(k))}</div>
+      <div style="font-family:${BRAND.font};font-size:11px;letter-spacing:.08em;font-weight:800;color:${BRAND.pink};margin-bottom:4px;text-transform:uppercase">${esc(rec.labels[k] || prettyLabel(k))}</div>
       <div style="font-family:${BRAND.font};font-size:14px;line-height:1.55;color:${BRAND.navy}">${esc(v || "(left blank)").replace(/\n/g, "<br>")}</div>
     </div>`).join("") || `<p style="font-family:${BRAND.font};color:${BRAND.navy};opacity:.6">(No fields filled in.)</p>`;
 
@@ -144,7 +159,7 @@ async function notify(rec) {
   </div>`;
 
   const text = `${subject}\nClient: ${rec.clientFull}\nForm: ${rec.form}\nSent: ${when} CT\n\n` +
-    entries.map(([k, v]) => `${prettyLabel(k).toUpperCase()}:\n${v || "(left blank)"}`).join("\n\n");
+    entries.map(([k, v]) => `${(rec.labels[k] || prettyLabel(k)).toUpperCase()}:\n${v || "(left blank)"}`).join("\n\n");
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -182,10 +197,11 @@ export default async (req) => {
       if (!cfg) return json({ error: "Unknown client" }, 400);
 
       // Honeypot: bots fill the hidden field, people don't. Pretend success, store nothing.
-      if (body.fields && String(body.fields["bot-field"] || "").trim()) return json({ ok: true });
+      if (body.fields && HONEYPOTS.some((h) => String(body.fields[h] || "").trim())) return json({ ok: true });
 
       const form = String(body.form || "").slice(0, 80) || `${client}-submission`;
       const fields = cleanFields(body.fields);
+      const labels = cfg.labels || {};
       const createdAt = new Date().toISOString();
       const id = `${client}/${createdAt.replace(/[:.]/g, "-")}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -198,6 +214,7 @@ export default async (req) => {
         formLabel: formLabel(client, form),
         who: whoSent(fields),
         fields,
+        labels: Object.fromEntries(Object.keys(fields).map((k) => [k, labels[k] || prettyLabel(k)])),
         page: String(body.page || "").slice(0, 200),
         createdAt,
         updatedAt: createdAt
@@ -240,7 +257,7 @@ export default async (req) => {
           completedAt: r.createdAt,
           history: Object.entries(r.fields).map(([k, v]) => ({
             role: "user",
-            content: `${prettyLabel(k)}: ${v || "(left blank)"}`
+            content: `${(r.labels && r.labels[k]) || prettyLabel(k)}: ${v || "(left blank)"}`
           }))
         }));
 
