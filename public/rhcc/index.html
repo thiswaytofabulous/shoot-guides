@@ -158,6 +158,19 @@ mark{background:var(--mark);color:inherit;padding:0 .25em;border-radius:4px;font
 .submitrow{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-top:16px}
 .who-sel{min-width:200px}
 .status{font-size:.9rem;font-weight:700}
+
+/* editable script */
+.edithint{font-size:.78rem;font-weight:700;color:var(--mauve-ink)}
+.vo p.ed{cursor:text;border-radius:6px;padding:2px 6px;margin:-2px -6px;transition:background .15s,box-shadow .15s}
+.vo p.ed:hover{background:var(--soft)}
+.vo p.ed:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--pink)}
+.line.is-edited .who::after,.opener.is-edited .olabel::after{content:"Edited";display:block;margin-top:4px;font-size:.58rem;letter-spacing:.16em;color:var(--pink)}
+.opener.is-edited .olabel::after{display:inline;margin:0 0 0 8px}
+.opener.is-edited{border-style:solid;border-color:var(--mauve)}
+.editbar{display:flex;flex-wrap:wrap;gap:12px;align-items:end;padding:16px clamp(18px,3vw,28px);border-top:1px solid var(--line);background:var(--soft)}
+.editbar .who-sel{min-width:180px}
+.linkbtn{font:inherit;font-size:.8rem;font-weight:700;color:var(--mauve-ink);background:none;border:0;padding:10px 4px;text-decoration:underline;cursor:pointer}
+.lastedit{font-size:.8rem;color:var(--muted);flex-basis:100%}
 .status.ok{color:#2f6b4f}.status.err{color:#a3364f}
 footer{border-top:1px solid var(--line);margin-top:56px}
 footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline}
@@ -227,10 +240,10 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
   <section id="script">
     <div class="sh">The draft script</div>
     <h2>Version one, <em>written to be changed.</em></h2>
-    <p class="read" style="margin-bottom:18px">Becky leads, and Kristyn comes in on the parts that are really about how you work together. Read it out loud as a pair. Anywhere you trip, or anywhere it sounds like someone else, note it in the box under the questions and I'll rewrite it.</p>
+    <p class="read" style="margin-bottom:18px">Becky leads, and Kristyn comes in on the parts that are really about how you work together. Read it out loud as a pair. Anywhere you trip, or anywhere it sounds like someone else, tap the line and rewrite it right here in your own words, then hit Send my edits. You'll both see the latest version.</p>
     <div class="script">
       <div class="script-head">
-        <span class="meta">Becky + Kristyn · about 170 words · runs 75 to 90 seconds</span>
+        <span class="meta">Becky + Kristyn · about 170 words · runs 75 to 90 seconds<br><span class="edithint">Tap any line to edit it</span></span>
         <button class="btn" id="copyScript" type="button">Copy script</button>
       </div>
       <div class="script-body">
@@ -255,6 +268,14 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
         </div>
         <p class="note">Highlighted pieces need your real numbers. If any of them aren't true yet, we'll swap in something that is.</p>
       </div>
+      <form name="rhcc-script" class="nf editbar" id="scriptForm">
+        <p hidden><label>Leave blank <input name="company"></label></p>
+        <span class="lastedit" id="lastEdit" hidden></span>
+        <label class="who-sel">Who's editing?<select name="from" required><option value="">Pick one</option><option>Becky</option><option>Kristyn</option><option>Both of us</option></select></label>
+        <button class="btn" type="submit">Send my edits</button>
+        <button class="linkbtn" type="button" id="resetScript">Back to Jessi's draft</button>
+        <span class="status" role="status" aria-live="polite"></span>
+      </form>
     </div>
     <div class="flagbar"><a class="flag" href="#questions" style="text-decoration:none">Answer the questions + send script notes ↓</a></div>
   </section>
@@ -431,6 +452,67 @@ footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;
     });
   }
   ['answersForm','flagForm'].forEach(function(id){var f=document.getElementById(id);if(f)wire(f);});
+
+  // ---- Editable script: tap a line, rewrite it, send. Both of them see the latest version. ----
+  (function(){
+    var form=document.getElementById('scriptForm'); if(!form) return;
+    var paras=[].slice.call(document.querySelectorAll('.opener .vo p, #scriptBody .line p'));
+    var KEY='rhcc-script-unsent';
+    var plainOK=(function(){var d=document.createElement('div');try{d.contentEditable='plaintext-only';return d.contentEditable==='plaintext-only';}catch(e){return false;}})();
+    paras.forEach(function(p){
+      p.dataset.original=p.innerText.trim();
+      p.dataset.html=p.innerHTML;
+      p.contentEditable=plainOK?'plaintext-only':'true';
+      p.spellcheck=true;
+      p.classList.add('ed');
+      p.setAttribute('role','textbox');
+      p.setAttribute('aria-label',(p.closest('.line')?p.closest('.line').querySelector('.who').textContent:p.closest('.opener').querySelector('.olabel').textContent)+' line, editable');
+      p.addEventListener('input',function(){mark(p);saveLocal();});
+      p.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();p.blur();}});
+      p.addEventListener('paste',function(e){if(plainOK)return;e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text'));});
+    });
+    function current(){return paras.map(function(p){return p.innerText.replace(/\s+/g,' ').trim();});}
+    function holder(p){return p.closest('.line')||p.closest('.opener');}
+    function mark(p){holder(p).classList.toggle('is-edited',p.innerText.replace(/\s+/g,' ').trim()!==p.dataset.original);}
+    function setText(p,t){if(t===p.dataset.original){p.innerHTML=p.dataset.html;}else{p.textContent=t;}mark(p);}
+    function apply(lines){if(!lines||lines.length!==paras.length)return false;paras.forEach(function(p,i){setText(p,String(lines[i]));});return true;}
+    function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(current()));}catch(e){}}
+    function clearLocal(){try{localStorage.removeItem(KEY);}catch(e){}}
+    function labelFor(p){var l=p.closest('.line');return l?l.querySelector('.who').textContent:p.closest('.opener').querySelector('.olabel').textContent;}
+    var lastEdit=document.getElementById('lastEdit');
+    function showLast(d){if(!d||!d.savedAt)return;var when=new Date(d.savedAt).toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});lastEdit.textContent='Latest version saved by '+(d.from||'one of you')+', '+when+'.';lastEdit.hidden=false;}
+
+    // Load: shared latest version first, then any unsent edits on this device on top.
+    ShootGuide.getDraft('script').then(function(d){
+      if(d){apply(d.lines);showLast(d);}
+      try{var mine=JSON.parse(localStorage.getItem(KEY)||'null');if(mine)apply(mine);}catch(e){}
+    });
+
+    document.getElementById('resetScript').addEventListener('click',function(){
+      if(!confirm("Put every line back to Jessi's original draft? Nothing is sent until you hit Send my edits."))return;
+      paras.forEach(function(p){setText(p,p.dataset.original);});clearLocal();
+    });
+
+    var status=form.querySelector('.status'), btn=form.querySelector('button[type=submit]'), label=btn.textContent;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var lines=current();
+      var changed=paras.filter(function(p,i){return lines[i]!==p.dataset.original;}).map(function(p){
+        var i=paras.indexOf(p), l=p.closest('.line'), n=l?' · LINE '+([].indexOf.call(l.parentNode.children,l)+1):'';return labelFor(p).toUpperCase()+n+'\nWAS: '+p.dataset.original+'\nNOW: '+(lines[i]||'(deleted)');
+      });
+      var full=paras.map(function(p,i){return labelFor(p).toUpperCase()+': '+lines[i];}).join('\n\n');
+      btn.disabled=true;btn.textContent='Sending…';status.className='status';status.textContent='';
+      ShootGuide.submit(form,{'what-changed':changed.length?changed.join('\n\n'):"No changes, they're happy with it as is.",'full-script':full},{doc:'script',lines:lines})
+        .then(function(ok){if(!ok)throw new Error('not sent');
+          status.className='status ok';status.textContent='Got it! This went straight to Jessi.';
+          btn.textContent='Sent';clearLocal();
+          showLast({from:form.querySelector('select[name=from]').value,savedAt:new Date().toISOString()});
+          setTimeout(function(){btn.disabled=false;btn.textContent=label;},2500);})
+        .catch(function(){
+          status.className='status err';status.textContent="That didn't send. Text it to Jessi at "+PHONE+" instead.";
+          btn.disabled=false;btn.textContent=label;});
+    });
+  })();
 
   var copyBtn=document.getElementById('copyScript');
   copyBtn.addEventListener('click',function(){

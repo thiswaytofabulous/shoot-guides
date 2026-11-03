@@ -2,6 +2,9 @@
 // Same pattern as the Website Wizard's store.js:
 //   POST {action:"submit", client, form, fields}  -> saves, then emails Jessi via Resend
 //   POST {action:"list", adminCode[, client]}     -> {sessions:[...]} for submission-dashboard
+//   POST {action:"draft-get", client, doc}        -> {draft} the latest shared version of an
+//        editable doc (e.g. the script), so both clients see each other's edits. A submit that
+//        carries {draft:{doc, lines:[...]}} saves that version before emailing.
 // Every submission is saved BEFORE the email goes out, so nothing is lost if Resend hiccups.
 // notify LOGS LOUDLY and RETURNS its result so a failed send is visible in the function log.
 import { getStore } from "@netlify/blobs";
@@ -15,7 +18,8 @@ const CLIENTS = {
     full: "Reel Home Care Consulting",
     forms: {
       "rhcc-answers": "Script answers",
-      "rhcc-flags": "Flag for discussion"
+      "rhcc-flags": "Flag for discussion",
+      "rhcc-script": "Script edits"
     },
     // Optional: nicer labels in the email + dashboard (anything unlisted is auto-labeled).
     labels: {
@@ -28,7 +32,9 @@ const CLIENTS = {
       "kristyn-part": "Q4 · Kristyn's part",
       "script-notes": "Script notes",
       "section": "About",
-      "note": "Note"
+      "note": "Note",
+      "what-changed": "What changed",
+      "full-script": "Full script, as they left it"
     }
   }
 };
@@ -41,6 +47,12 @@ const HONEYPOTS = ["bot-field", "company"];
 const WHO_FIELDS = ["name", "your-name", "from", "who", "sender", "submitted-by"];
 
 const MAX_FIELD_CHARS = 10000;
+const MAX_DRAFT_LINES = 40;
+const MAX_LINE_CHARS = 2000;
+
+function cleanDoc(doc) {
+  return String(doc || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40);
+}
 const MAX_FIELDS = 60;
 
 function json(obj, status = 200) {
@@ -228,10 +240,31 @@ export default async (req) => {
         console.error("[store] Blobs save failed:", String((e && e.message) || e));
       }
 
+      // Editable docs: keep the newest version so the other person opens to it.
+      if (body.draft && Array.isArray(body.draft.lines) && cleanDoc(body.draft.doc)) {
+        try {
+          await getStore("shoot-guide-drafts").setJSON(`${client}/${cleanDoc(body.draft.doc)}`, {
+            lines: body.draft.lines.slice(0, MAX_DRAFT_LINES).map((l) => String(l == null ? "" : l).slice(0, MAX_LINE_CHARS)),
+            from: rec.who,
+            savedAt: createdAt
+          });
+        } catch (e) {
+          console.error("[store] draft save failed:", String((e && e.message) || e));
+        }
+      }
+
       const mail = await notify(rec);
       // The page says "Got it!" as long as the submission landed somewhere you'll see it.
       const ok = saved || mail.ok;
       return json({ ok, saved, notify: mail }, ok ? 200 : 502);
+    }
+
+    if (action === "draft-get") {
+      const client = String(body.client || "").toLowerCase();
+      const doc = cleanDoc(body.doc);
+      if (!CLIENTS[client] || !doc) return json({ error: "Unknown client or doc" }, 400);
+      const draft = await getStore("shoot-guide-drafts").get(`${client}/${doc}`, { type: "json" });
+      return json({ draft: draft || null });
     }
 
     // --- Dashboard feed: same contract as the Wizards and Shoot With Purpose ---

@@ -30,7 +30,8 @@
     return out;
   }
 
-  function submit(form, extraFields) {
+  // extraFields: more answers to include. draft: {doc, lines} to save as the shared latest version.
+  function submit(form, extraFields, draft) {
     var fields = fieldsOf(form);
     if (extraFields) for (var k in extraFields) fields[k] = extraFields[k];
     return fetch("/.netlify/functions/store", {
@@ -41,7 +42,8 @@
         client: clientSlug(),
         form: formName(form),
         fields: fields,
-        page: location.pathname
+        page: location.pathname,
+        draft: draft || undefined
       })
     })
       .then(function (res) {
@@ -50,5 +52,17 @@
       .catch(function () { return false; });
   }
 
-  window.ShootGuide = { submit: submit };
+  // Latest shared version of an editable doc, or null.
+  function getDraft(doc) {
+    return fetch("/.netlify/functions/store", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "draft-get", client: clientSlug(), doc: doc })
+    })
+      .then(function (res) { return res.ok ? res.json() : {}; })
+      .then(function (d) { return (d && d.draft) || null; })
+      .catch(function () { return null; });
+  }
+
+  window.ShootGuide = { submit: submit, getDraft: getDraft };
 })();
