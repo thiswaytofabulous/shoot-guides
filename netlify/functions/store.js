@@ -39,6 +39,20 @@ const CLIENTS = {
       "screenshots": "Screenshots",
       "full-script": "Full script, as they left it"
     }
+  },
+  "home-care-cpas": {
+    name: "Home Care CPAs",
+    full: "The Home Care CPAs",
+    forms: {
+      "home-care-cpas-flags": "Flag for discussion",
+      "home-care-cpas-inspo": "Outfit inspo"
+    },
+    labels: {
+      "section": "About",
+      "note": "Note",
+      "links": "Pinterest links",
+      "screenshots": "Screenshots"
+    }
   }
 };
 

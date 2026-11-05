@@ -7,7 +7,7 @@ public/
   index.html              ← bare landing page ("use the link Jessi sent you")
   assets/guide-submit.js  ← shared submit helper every guide loads
   rhcc/index.html         ← https://<site>/rhcc/
-  home-care-cpas/…        ← next client, same shape
+  home-care-cpas/index.html ← https://<site>/home-care-cpas/ (photos in img/)
 netlify/functions/store.js ← saves submissions, emails via Resend, feeds the dashboard
 ```
 

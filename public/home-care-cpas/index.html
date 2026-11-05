@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" data-client="home-care-cpas">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>The Home Care CPAs · Shoot Day Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap">
+<style>
+/* Haven Built Media palette: navy anchor, dusty rose callouts, warm white page, slate accents. */
+:root{
+  --bg:#F3F1F0; --surface:#fff; --fg:#22344b; --muted:#5d6878;
+  --navy:#2E4968; --slate:#8A99AB; --rose:#DBB3B3; --rose-ink:#9b5f63;
+  --soft:#ece6e3; --line:#dcd6d3; --mark:#f1dcdc;
+  --display:"Playfair Display", Georgia, serif;
+  --body:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.65}
+.wrap{max-width:min(1000px,94vw);margin:0 auto;padding:0 16px}
+.read{max-width:66ch}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+
+.mast{background:var(--navy);color:#fff}
+.mast .wrap{padding-block:clamp(26px,5vw,48px) clamp(34px,6vw,60px)}
+.lockup{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.7rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.lockup .x{opacity:.75}
+.lockup .hbm{color:#fff;border-bottom:2px solid var(--rose);padding-bottom:2px}
+.mast .count{margin-top:clamp(26px,5vw,44px);font-weight:900;font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:var(--rose)}
+.mast h1{font-weight:900;font-size:clamp(2.1rem,6vw,3.6rem);line-height:1.02;letter-spacing:-.01em;text-transform:uppercase;margin-top:10px}
+.mast h1 em{font-family:var(--display);font-weight:400;font-style:italic;text-transform:none;letter-spacing:0;color:var(--rose)}
+.mast .lede{margin-top:18px;max-width:58ch;font-size:1.04rem;opacity:.94}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-size:.85rem;font-weight:600}
+.facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--rose);margin-right:8px;vertical-align:middle}
+
+section{padding-top:clamp(40px,6vw,62px)}
+.sh{font-weight:800;font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;color:var(--rose-ink);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sh::before{content:"";width:22px;height:2px;background:var(--rose)}
+h2{font-weight:900;font-size:clamp(1.45rem,3.4vw,2.1rem);line-height:1.12;text-transform:uppercase;margin-bottom:14px}
+h2 em{font-family:var(--display);font-weight:400;font-style:italic;text-transform:none;color:var(--rose-ink)}
+.stack{display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(18px,3vw,28px)}
+
+.split{display:grid;grid-template-columns:3fr 2fr;gap:10px;margin:20px 0 14px}
+.split div{border-radius:12px;padding:16px 18px;min-width:0}
+.split .v{background:var(--navy);color:#fff}
+.split .p{background:var(--rose);color:var(--fg)}
+.split b{display:block;font-weight:900;text-transform:uppercase;letter-spacing:.06em;font-size:1rem}
+.split span{font-size:.9rem;opacity:.92}
+@media (max-width:600px){.split{grid-template-columns:1fr}}
+
+.day{display:grid;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.row{display:grid;grid-template-columns:86px 1fr auto;gap:14px;align-items:baseline;padding:14px 18px;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row time{font-weight:800;font-variant-numeric:tabular-nums;color:var(--rose-ink)}
+.row b{font-weight:700}
+.row p{font-size:.9rem;color:var(--muted);margin-top:2px}
+.tag{font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.tag.p{background:var(--navy);color:#fff}
+.tag.s{background:var(--rose);color:var(--fg)}
+.tag.b{background:var(--soft);color:var(--muted)}
+@media (max-width:560px){.row{grid-template-columns:64px 1fr}.row .tag{grid-column:2;justify-self:start}}
+
+.todo ol{margin:0;padding-left:1.2em;display:grid;gap:10px}
+.todo li::marker{font-weight:900;color:var(--rose-ink)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:22px;font-variant-numeric:tabular-nums}
+.tl{border-top:3px solid var(--line);padding-top:10px}
+.tl.now{border-color:var(--rose)}
+.tl.shoot{border-color:var(--navy)}
+.tl b{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.tl span{display:block;font-weight:600;font-size:.94rem;margin-top:2px}
+@media (max-width:640px){.timeline{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.place{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.place figure{margin:0;min-width:0}
+.place img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px;display:block}
+.place figcaption{font-size:.84rem;color:var(--muted);margin-top:8px}
+@media (max-width:640px){.place{grid-template-columns:1fr}.place img{aspect-ratio:4/3}}
+
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.grid3{grid-template-columns:1fr}}
+.c{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.c.lead{border:2px solid var(--navy)}
+.c .flagline{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;background:var(--navy);color:#fff;border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.c h3{font-size:.98rem;font-weight:700;margin-bottom:6px}
+.c p{font-size:.9rem;color:var(--muted)}
+
+.looks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:720px){.looks{grid-template-columns:1fr}}
+.look{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:grid;gap:10px;min-width:0;align-content:start}
+.chips{display:flex;gap:6px}
+.chip{width:28px;height:28px;border-radius:50%;border:1px solid var(--line)}
+.look .for{font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.look h3{font-family:var(--display);font-weight:400;font-size:1.3rem}
+.look p{font-size:.94rem}
+.look p.note{font-size:.86rem}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+@media (max-width:640px){.two{grid-template-columns:1fr}}
+.two h3{font-size:.76rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.two ul{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.95rem}
+.note{font-size:.88rem;color:var(--muted)}
+.boards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+@media (max-width:820px){.boards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.board{display:block;background:var(--navy);color:#fff;text-decoration:none;border-radius:14px;padding:16px 18px;min-width:0;animation:wiggle 3.4s ease-in-out infinite;transform-origin:50% 60%}
+.board:nth-child(2){animation-delay:.25s}.board:nth-child(3){animation-delay:.5s}.board:nth-child(4){animation-delay:.75s}
+.board b{display:block;font-weight:900;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase}
+.board span{display:block;font-size:.88rem;opacity:.88;margin-top:4px}
+.board::after{content:"Open on Pinterest \2192";display:block;margin-top:10px;font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--rose)}
+.board:hover,.board:focus-visible{animation-play-state:paused;transform:scale(1.03);outline:none;box-shadow:0 0 0 3px var(--rose)}
+@keyframes wiggle{0%,72%,100%{transform:rotate(0)}76%{transform:rotate(-2deg)}80%{transform:rotate(2deg)}84%{transform:rotate(-1.5deg)}88%{transform:rotate(1deg)}92%{transform:rotate(0)}}
+@media (prefers-reduced-motion:reduce){.board{animation:none}}
+
+.soft{background:var(--soft);border-radius:14px;padding:clamp(22px,4vw,34px)}
+.vo{font-family:var(--display);font-size:clamp(1.08rem,2vw,1.24rem);line-height:1.6}
+
+.btn{font-family:var(--body);font-weight:800;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;background:var(--navy);color:#fff;border:0;border-radius:999px;padding:10px 18px;cursor:pointer}
+.btn:focus-visible,.flag:focus-visible{outline:3px solid var(--rose-ink);outline-offset:2px}
+.flagbar{display:flex;justify-content:flex-end;margin-top:12px}
+.flag{font-family:var(--body);font-weight:700;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--rose-ink);border:1.5px solid var(--rose-ink);border-radius:999px;padding:7px 14px;cursor:pointer}
+.flag:hover{background:var(--mark)}
+.fallback{margin-top:10px;display:grid;gap:8px}
+.fallback textarea{width:100%;min-height:84px;font:inherit;font-size:.95rem;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--fg)}
+.fallback .row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.flagbox{background:var(--surface);border:2px solid var(--rose);border-radius:14px;padding:clamp(20px,3vw,28px)}
+
+.nf input[type=text],.nf select,.nf textarea{width:100%;font:inherit;font-size:.95rem;font-weight:500;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--fg)}
+.nf textarea{min-height:96px;resize:vertical}
+.nf input:focus-visible,.nf select:focus-visible,.nf textarea:focus-visible{outline:3px solid var(--rose-ink);outline-offset:1px}
+.nf label{display:grid;gap:6px;font-size:.82rem;font-weight:700;align-items:start}
+.nf .two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}
+@media (max-width:600px){.nf .two-col{grid-template-columns:1fr}}
+.submitrow{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-top:16px}
+.who-sel{min-width:200px}
+.status{font-size:.9rem;font-weight:700}
+.status.ok{color:#2f6b4f}.status.err{color:#a3364f}
+.ideas{margin-top:18px;background:var(--soft);border-radius:14px;padding:18px 20px;display:grid;gap:10px}
+.uploadrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.btn.ghost{background:#fff;color:var(--rose-ink);border:1.5px solid var(--rose-ink);display:inline-block}
+.uploadrow:focus-within .btn.ghost{outline:3px solid var(--rose-ink);outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.filecount{font-size:.82rem;font-weight:700;color:var(--rose-ink)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumbs:empty{display:none}
+.thumb{position:relative;width:64px;height:96px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(34,52,75,.85);color:#fff;font:800 14px/1 var(--body);cursor:pointer}
+.opt{font-weight:500;color:var(--muted)}
+.inspoboard{margin-top:6px;padding-top:16px;border-top:1px solid var(--line);display:grid;gap:10px}
+.inspoboard[hidden]{display:none}
+.inspoboard>b{font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--rose-ink)}
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.igrid:empty,.ilinks:empty{display:none}
+.itile{position:relative;margin:0;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.itile a{display:block;aspect-ratio:3/5}
+.itile img{width:100%;height:100%;object-fit:cover;display:block}
+.itile figcaption{font-size:.68rem;font-weight:700;color:var(--muted);padding:5px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.itile button,.ilink button{border:0;cursor:pointer;font:800 13px/1 var(--body)}
+.itile button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(34,52,75,.85);color:#fff}
+.ilinks{display:flex;flex-wrap:wrap;gap:8px}
+.ilink{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1.5px solid var(--rose-ink);border-radius:999px;padding-left:12px}
+.ilink a{font-size:.74rem;font-weight:700;color:var(--rose-ink);text-decoration:none;padding:6px 0}
+.ilink button{background:none;color:var(--muted);padding:6px 10px;font-size:14px}
+footer{border-top:1px solid var(--line);margin-top:56px}
+footer .wrap{padding-block:26px 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline}
+.phone{font-weight:800;font-size:1.1rem;letter-spacing:.04em;font-variant-numeric:tabular-nums;user-select:all}
+.made{font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.made b{color:var(--fg);border-bottom:2px solid var(--rose)}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="lockup"><span>The Home Care CPAs</span><span><span class="x">Directed by </span><span class="hbm">Haven Built Media</span></span></div>
+    <div class="count">One week out</div>
+    <h1>A top-tier firm.<br><em>Photos to match.</em></h1>
+    <p class="lede">Dana, Adam and Amy, here's the plan for next Thursday: what we're making, how the morning runs, what to wear and what to bring. Send notes and outfit ideas right from this page. They come straight to me.</p>
+    <div class="facts"><span>Thursday, November 12</span><span>Starting at 9:30</span><span>Venture X, Oak Brook</span></div>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section id="focus">
+    <div class="sh">The focus</div>
+    <h2>One library for <em>every place you show up.</em></h2>
+    <p class="read">Amy, you said it best: you're not a bookkeeping firm. You're a CPA-led, industry-exclusive accounting and advisory firm for home care agencies, and your photos should say that at first glance. So this shoot builds one flexible library for everywhere a prospect meets you: your website, your Dubsado proposals, sales decks, email signatures and LinkedIn. And because you're growing your advisory and fractional CFO work, we'll show range, so an agency owner can picture the version of you that fits them.</p>
+    <div class="split" role="img" aria-label="The morning splits into a photo shoot first, then a Brand Therapy session">
+      <div class="v"><b>Photos first</b><span>About 90 minutes: the three of you at work, advisory moments, portraits</span></div>
+      <div class="p"><b>Then Brand Therapy</b><span>An hour together once the cameras are put away</span></div>
+    </div>
+    <div class="flagbar"><button class="flag" type="button" data-for="focus">Flag this for discussion</button></div>
+  </section>
+
+  <section id="inspo">
+    <div class="sh">Start here</div>
+    <h2>Have a look <em>at the direction.</em></h2>
+    <p class="read">The easiest way to plan outfits is to see them. Tap through these, then send me what you love and what you'd never wear, right below. Even a quick "yes to the blazers, no to anything cream" helps me plan the whole morning.</p>
+    <div class="boards">
+      <a class="board" href="https://www.pinterest.com/search/pins/?q=women%20blazer%20business%20casual%20professional%20headshot%20outfit" target="_blank" rel="noopener"><b>Polished · women</b><span>Blazers and structured jackets</span></a>
+      <a class="board" href="https://www.pinterest.com/search/pins/?q=men%20business%20casual%20blazer%20no%20tie%20professional%20photo" target="_blank" rel="noopener"><b>Polished · men</b><span>Sport coat, open collar</span></a>
+      <a class="board" href="https://www.pinterest.com/search/pins/?q=women%20fine%20knit%20sweater%20business%20casual%20office%20outfit" target="_blank" rel="noopener"><b>Approachable · women</b><span>Knits and soft blouses</span></a>
+      <a class="board" href="https://www.pinterest.com/search/pins/?q=men%20sweater%20over%20collared%20shirt%20business%20casual" target="_blank" rel="noopener"><b>Approachable · men</b><span>Sweater over a collar</span></a>
+    </div>
+    <div class="ideas">
+      <form name="home-care-cpas-inspo" class="nf" id="inspoForm">
+        <p hidden><label>Leave blank <input name="company"></label></p>
+        <p><strong>See something you love?</strong> On your phone, screenshot it on Pinterest and upload it right here. You can also paste a link, or text screenshots to me at <span style="white-space:nowrap">630-965-6827</span>.</p>
+        <div class="uploadrow" style="margin-top:10px">
+          <label class="btn ghost" for="inspoFiles">Upload screenshots</label>
+          <input type="file" id="inspoFiles" accept="image/*" multiple class="vh">
+          <span class="filecount" aria-live="polite"></span>
+        </div>
+        <div class="thumbs" id="inspoThumbs" style="margin-top:8px"></div>
+        <div class="two-col" style="margin-top:12px">
+          <label><span>Pinterest links <span class="opt">(optional)</span></span><textarea name="links" rows="2" placeholder="Paste one or a few links"></textarea></label>
+          <label><span>Loves and hard nos <span class="opt">(optional)</span></span><textarea name="note" rows="2" placeholder="Yes to blazers, no to anything sleeveless…"></textarea></label>
+        </div>
+        <div class="submitrow" style="margin-top:4px">
+          <label class="who-sel">From<select name="from" required><option value="">Pick one</option><option>Dana</option><option>Adam</option><option>Amy</option><option>All of us</option></select></label>
+          <button class="btn" type="submit">Send to Jessi</button>
+          <span class="status" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+      <div class="inspoboard" id="inspoBoard" hidden aria-live="polite">
+        <b>Your inspo so far</b>
+        <div class="igrid" id="inspoGrid"></div>
+        <div class="ilinks" id="inspoLinks"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="todos">
+    <div class="sh">Your to-dos before Thursday</div>
+    <div class="card todo">
+      <ol class="read">
+        <li><strong>Finish the Brand Therapy pre-session</strong> if it isn't done yet. One person can answer for the firm. It's how I show up to our session already knowing where to dig in.</li>
+        <li><strong>Confirm the room hours.</strong> We'll want the space from 9:30 until about 12:30 so neither the photos nor Brand Therapy feel rushed.</li>
+        <li><strong>Pull two looks each from your closets.</strong> No shopping. Peek at the outfit ideas above, flag your yeses and nos, and the details are further down.</li>
+        <li><strong>Optional: line up an "agency owner."</strong> A friendly client or a friend who can sit across the table from you for about 20 minutes. No lines, just a real conversation. It makes the advisory photos feel like the real thing. If that's not possible, no problem, I'll shoot those moments with the three of you.</li>
+      </ol>
+      <div class="timeline" aria-label="Timeline">
+        <div class="tl now"><b>Fri, Nov 6</b><span>Brand Therapy pre-session in</span></div>
+        <div class="tl"><b>Mon, Nov 9</b><span>Room hours + "agency owner" confirmed</span></div>
+        <div class="tl"><b>Wed, Nov 11</b><span>Outfits picked, steamed, ready</span></div>
+        <div class="tl shoot"><b>Thu, Nov 12</b><span>Shoot day, from 9:30</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="place">
+    <div class="sh">Where we're shooting</div>
+    <h2>Venture X, <em>Oak Brook.</em></h2>
+    <p class="read">Thank you for scouting this one. It has exactly what we need: big windows with soft daylight, a few distinct corners so the gallery doesn't look like it was all shot in one spot, and furniture that reads polished without feeling stiff.</p>
+    <div class="place">
+      <figure><img src="img/hightop.jpg" alt="A long white high-top table beside floor-to-ceiling windows, with black leather stools"><figcaption>The high-top by the windows, for the three of you working through the numbers together.</figcaption></figure>
+      <figure><img src="img/lounge-chairs.jpg" alt="Two black leather lounge chairs with a small round table in front of bold black and white artwork"><figcaption>The lounge chairs, for one-on-one advisory conversations and portraits.</figcaption></figure>
+      <figure><img src="img/sofa-lounge.jpg" alt="A warm cognac leather sofa and round coffee table in a lounge with large windows"><figcaption>The cognac sofa lounge, for relaxed photos of the three of you together.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="day">
+    <div class="sh">How the morning runs</div>
+    <h2>Photos first, <em>then we talk.</em></h2>
+    <p class="read" style="margin-bottom:18px">This is a guide, not a stopwatch. I'll follow the energy in the room, and we'll start with the three of you working together so nobody has to warm up alone in front of the camera.</p>
+    <div class="day">
+      <div class="row"><time>9:30</time><div><b>Arrive, coffee, settle in</b><p>I set up while you get comfortable. No camera for the first few minutes.</p></div><span class="tag b">Setup</span></div>
+      <div class="row"><time>9:45</time><div><b>The three of you at work</b><p>Around a table, laptop open, talking through the numbers. Easy and natural, a great warm-up.</p></div><span class="tag p">Photo</span></div>
+      <div class="row"><time>10:10</time><div><b>Advisory moments</b><p>A CFO-level conversation, a tax strategy session, your "agency owner" across the table if you have one.</p></div><span class="tag p">Photo</span></div>
+      <div class="row"><time>10:35</time><div><b>Portraits</b><p>A few minutes each, then a quick jacket swap for a second look.</p></div><span class="tag p">Photo</span></div>
+      <div class="row"><time>10:55</time><div><b>The three of you together</b><p>Your leadership photo, plus a few wide shots with room for text on covers and slides.</p></div><span class="tag p">Photo</span></div>
+      <div class="row"><time>11:15</time><div><b>Reset</b><p>Water, coffee, a breath. Cameras go away.</p></div><span class="tag b">Break</span></div>
+      <div class="row"><time>11:30</time><div><b>Brand Therapy</b><p>We sit down together and dig into your story, your positioning, and what comes next.</p></div><span class="tag s">Strategy</span></div>
+      <div class="row"><time>12:30</time><div><b>Wrap</b><p>Your Brand Rx lands in your inbox within 48 hours.</p></div><span class="tag b">Done</span></div>
+    </div>
+    <div class="flagbar"><button class="flag" type="button" data-for="day">Flag this for discussion</button></div>
+  </section>
+
+  <section id="making">
+    <div class="sh">What we're making</div>
+    <h2>Every frame <em>has a job.</em></h2>
+    <div class="grid3">
+      <div class="c lead"><span class="flagline">Must-have</span><h3>Leadership portraits</h3><p>Dana, Adam and Amy, each with a fresh, polished portrait for your team page, LinkedIn and email signatures.</p></div>
+      <div class="c lead"><span class="flagline">Must-have</span><h3>The three of you together</h3><p>Your leadership photo, for the homepage, proposals and the first slide of every sales deck.</p></div>
+      <div class="c lead"><span class="flagline">Must-have</span><h3>Advisory in action</h3><p>CFO-level conversations, tax strategy and numbers on screen, so prospects can see the range of what you do.</p></div>
+      <div class="c"><h3>Wide cover shots</h3><p>Horizontal frames with room for text: LinkedIn and social covers, deck title slides, proposal headers.</p></div>
+      <div class="c"><h3>The details</h3><p>Hands on a keyboard, a dashboard on screen, notes and coffee. Small images that make proposals and posts feel finished.</p></div>
+      <div class="c"><h3>Your Brand Rx</h3><p>From Brand Therapy: a written doc of what I heard, the reframe, and your three most important next moves, within 48 hours.</p></div>
+    </div>
+    <p class="note" style="margin-top:14px">Photos are hand-toned and delivered as a web-resolution gallery, roughly 45 to 60 images across the three of you, with unlimited downloads.</p>
+    <div class="flagbar"><button class="flag" type="button" data-for="making">Flag this for discussion</button></div>
+  </section>
+
+  <section id="wear">
+    <div class="sh">What to wear</div>
+    <h2>Two looks each, <em>from your own closet.</em></h2>
+    <p class="read" style="margin-bottom:18px">Please don't buy anything. These are suggestions, not rules. Think polished business casual: one look with a jacket, one without, so we get two feels in one morning. On color, don't overthink it. Solid colors you already love wearing are perfect. Just compare notes with each other before Thursday so the three of you don't show up in the same shade.</p>
+    <div class="looks">
+      <div class="look">
+        <div class="for">Look 1 · The advisor</div>
+        <h3>Polished, with a jacket</h3>
+        <p><strong>Dana and Amy:</strong> a blazer or structured jacket over a simple solid top, or a solid dress with a jacket.</p>
+        <p><strong>Adam:</strong> a sport coat or blazer with an open-collar shirt. No tie needed, but bring one if you love it.</p>
+        <p class="note">This is your portrait and leadership look, so wear what you'd wear to a first meeting with your biggest client.</p>
+      </div>
+      <div class="look">
+        <div class="for">Look 2 · The partner</div>
+        <h3>Same morning, jacket off</h3>
+        <p><strong>Dana and Amy:</strong> a fine-knit sweater, a cardigan or a soft blouse. Or simply Look 1 without the jacket.</p>
+        <p><strong>Adam:</strong> a sweater over a collared shirt, or the shirt on its own with sleeves rolled.</p>
+        <p class="note">This one's for the working shots, where you look like the people agency owners actually want across the table.</p>
+      </div>
+    </div>
+    <div class="two" style="margin-top:24px">
+      <div><h3>These help</h3><ul><li>Solid colors with some weight to the fabric, in your everyday favorites</li><li>Open necklines, like a soft V or a wide crew</li><li>Jewelry and watches you wear every day</li><li>A steamer and a lint roller</li></ul></div>
+      <div><h3>Skip these</h3><ul><li>All black, which disappears into the leather chairs</li><li>Tan and rust, which blend into the sofas</li><li>Busy prints, thin stripes, logos and shiny fabrics</li><li>Anything you'll tug at all morning</li></ul></div>
+    </div>
+    <div class="flagbar"><button class="flag" type="button" data-for="wear">Flag this for discussion</button></div>
+  </section>
+
+  <section id="bring">
+    <div class="sh">What to bring</div>
+    <div class="two">
+      <ul>
+        <li>A laptop or two with a sample dashboard or report open. Dummy or blurred numbers only; you're the stewards of your clients' data, and the photos should never show the real thing.</li>
+        <li>A printed sample report or two to hold and point at</li>
+      </ul>
+      <ul>
+        <li>The notebooks and pens you actually use with clients</li>
+        <li>Your favorite mugs, and anything branded you love</li>
+        <li>Your "agency owner," if you've lined one up</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="flag">
+    <div class="sh">Anything else?</div>
+    <div class="flagbox">
+      <h2 style="margin-bottom:10px">Flag it here.</h2>
+      <p class="read">A change, a question, a "we'd rather not." Send it here and it comes straight to my inbox. Nothing changes until we both say yes.</p>
+      <form name="home-care-cpas-flags" class="nf" id="flagForm" style="margin-top:16px">
+        <p hidden><label>Leave blank <input name="company"></label></p>
+        <div class="two-col">
+          <label>Who's this from?<select name="from" required><option value="">Pick one</option><option>Dana</option><option>Adam</option><option>Amy</option><option>All of us</option></select></label>
+          <label>What's it about?<select name="section" id="sectionSel">
+            <option value="general">Something else</option>
+            <option value="focus">The focus</option>
+            <option value="day">How the morning runs</option>
+            <option value="making">What we're making</option>
+            <option value="wear">What to wear</option>
+            <option value="bring">What to bring</option>
+            <option value="location">The location</option>
+            <option value="brand-therapy">Brand Therapy</option>
+          </select></label>
+        </div>
+        <label>Your note<textarea name="note" id="flagNote" rows="4" required placeholder="What would you change, or what do you want to talk through?"></textarea></label>
+        <div class="submitrow">
+          <button class="btn" type="submit">Send to Jessi</button>
+          <span class="status" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh">About the nerves</div>
+    <div class="soft"><div class="vo"><p>Amy, you told me you hate having your picture taken. You're in very good company, and I've planned the morning around it. We start with the three of you working, so you're busy doing instead of posing. Portraits are quick, and nobody sees the outtakes but me. Dana and Adam, the same goes for you. My job is to make it feel like a normal morning at work that just happens to have a camera in it.</p></div></div>
+  </section>
+
+</div></main>
+
+<footer>
+  <div class="wrap">
+    <div><p>Questions, or want a second opinion on an outfit? Text me a photo.</p><p class="phone" style="margin-top:6px">Jessi · 630-965-6827</p></div>
+    <span class="made">Made for The Home Care CPAs by <b>Haven Built Media</b></span>
+  </div>
+</footer>
+
+<script src="/assets/guide-submit.js"></script>
+<script>
+(function(){
+  var PHONE='630-965-6827';
+  // Flag buttons jump to the note form with the section preselected
+  document.querySelectorAll('[data-for]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.getAttribute('data-for');
+      var sel=document.getElementById('sectionSel');
+      if(sel&&sel.querySelector('option[value="'+id+'"]'))sel.value=id;
+      document.getElementById('flag').scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(function(){document.getElementById('flagNote').focus({preventScroll:true});},450);
+    });
+  });
+  function wire(form){
+    var status=form.querySelector('.status'), btn=form.querySelector('button[type=submit]'), label=btn.textContent;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      btn.disabled=true;btn.textContent='Sending…';status.className='status';status.textContent='';
+      ShootGuide.submit(form)
+        .then(function(ok){if(!ok)throw new Error('not sent');
+          status.className='status ok';status.textContent='Got it! This went straight to Jessi.';
+          btn.textContent='Sent';form.querySelectorAll('textarea').forEach(function(t){t.value='';});
+          setTimeout(function(){btn.disabled=false;btn.textContent=label;},2500);})
+        .catch(function(){
+          status.className='status err';status.textContent="That didn't send. Text it to Jessi at "+PHONE+" instead.";
+          btn.disabled=false;btn.textContent=label;});
+    });
+  }
+  var ff=document.getElementById('flagForm'); if(ff) wire(ff);
+
+  // ---- Outfit inspo: upload screenshots and/or paste links; shared board for all three ----
+  (function(){
+    var form=document.getElementById('inspoForm'); if(!form) return;
+    var input=document.getElementById('inspoFiles'), thumbs=document.getElementById('inspoThumbs'), count=form.querySelector('.filecount');
+    var links=form.querySelector('textarea[name=links]'), note=form.querySelector('textarea[name=note]'), files=[], MAX=6, status=form.querySelector('.status');
+    function render(){
+      thumbs.innerHTML='';
+      files.forEach(function(f,i){
+        var d=document.createElement('div');d.className='thumb';
+        var im=document.createElement('img');im.src=f.preview;im.alt='Screenshot '+(i+1);
+        var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label','Remove screenshot '+(i+1));
+        x.addEventListener('click',function(){files.splice(i,1);render();});
+        d.appendChild(im);d.appendChild(x);thumbs.appendChild(d);
+      });
+      count.textContent=files.length?files.length+' screenshot'+(files.length>1?'s':'')+' ready'+(files.length>=MAX?' (6 max)':''):'';
+    }
+    input.addEventListener('change',function(){
+      if(!input.files.length)return;
+      count.textContent='Getting them ready…';status.className='status';status.textContent='';
+      ShootGuide.prepareImages(input.files,MAX-files.length).then(function(list){files=files.concat(list).slice(0,MAX);input.value='';render();});
+    });
+    var board=document.getElementById('inspoBoard'), grid=document.getElementById('inspoGrid'), linkRow=document.getElementById('inspoLinks');
+    function when(iso){try{return new Date(iso).toLocaleDateString([], {weekday:'short'});}catch(e){return '';}}
+    function hideBtn(label,id,item,node){
+      var x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label',label);
+      x.addEventListener('click',function(){
+        if(!confirm('Take this off the page? Jessi still has a copy.'))return;
+        ShootGuide.hideInspo(id,item).then(function(ok){if(ok)node.remove();if(!grid.children.length&&!linkRow.children.length)board.hidden=true;});
+      });
+      return x;
+    }
+    function loadBoard(){
+      ShootGuide.getInspo().then(function(items){
+        grid.innerHTML='';linkRow.innerHTML='';
+        items.forEach(function(it){
+          var tag=(it.who||'One of you')+' · '+when(it.createdAt);
+          it.images.forEach(function(im){
+            var fig=document.createElement('figure');fig.className='itile';
+            var a=document.createElement('a');a.href=im.url;a.target='_blank';a.rel='noopener';
+            var img=document.createElement('img');img.src=im.url;img.alt='Outfit inspo from '+(it.who||'one of you');img.loading='lazy';
+            var cap=document.createElement('figcaption');cap.textContent=tag;
+            a.appendChild(img);fig.appendChild(a);fig.appendChild(cap);
+            fig.appendChild(hideBtn('Remove this screenshot',it.id,im.key,fig));
+            grid.appendChild(fig);
+          });
+          it.links.forEach(function(l){
+            var span=document.createElement('span');span.className='ilink';
+            var a=document.createElement('a');a.href=l;a.target='_blank';a.rel='noopener';a.textContent='Pin from '+(it.who||'one of you')+' →';
+            span.appendChild(a);span.appendChild(hideBtn('Remove this link',it.id,l,span));
+            linkRow.appendChild(span);
+          });
+        });
+        board.hidden=!(grid.children.length||linkRow.children.length);
+      });
+    }
+    loadBoard();
+    var btn=form.querySelector('button[type=submit]'), label=btn.textContent;
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      if(!files.length&&!links.value.trim()&&!note.value.trim()){status.className='status err';status.textContent='Add a screenshot, a link or a note first.';return;}
+      btn.disabled=true;btn.textContent='Sending…';status.className='status';status.textContent='';
+      ShootGuide.submit(form,null,null,files.map(function(f){return {name:f.name,type:f.type,data:f.data};}))
+        .then(function(ok){if(!ok)throw new Error('not sent');
+          status.className='status ok';status.textContent='Got it! This went straight to Jessi.';
+          btn.textContent='Sent';files=[];render();links.value='';note.value='';loadBoard();
+          setTimeout(function(){btn.disabled=false;btn.textContent=label;},2500);})
+        .catch(function(){
+          status.className='status err';status.textContent="That didn't send. Text it to Jessi at "+PHONE+" instead.";
+          btn.disabled=false;btn.textContent=label;});
+    });
+  })();
+})();
+</script>
+</body>
+</html>
