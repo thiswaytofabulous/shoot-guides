@@ -375,8 +375,9 @@ export default async (req) => {
 
     // --- Dashboard feed: same contract as the Wizards and Shoot With Purpose ---
     if (action === "list") {
-      const expected = process.env.ADMIN_CODE || process.env.ADMIN_TOKEN;
-      if (!expected || body.adminCode !== expected) return json({ error: "Unauthorized" }, 401);
+      // Trimmed on both sides so a stray space or line break pasted into Netlify doesn't lock the dashboard out.
+      const expected = String(process.env.ADMIN_CODE || process.env.ADMIN_TOKEN || "").trim();
+      if (!expected || String(body.adminCode || "").trim() !== expected) return json({ error: "Unauthorized" }, 401);
 
       const prefix = body.client ? String(body.client).toLowerCase() + "/" : undefined;
       const { blobs } = await store.list(prefix ? { prefix } : undefined);
